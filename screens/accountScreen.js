@@ -31,7 +31,7 @@ function AccountScreen({ navigation }) {
         return(
             <TouchableOpacity style={styles.itemContainer} onPress={onClickAction}>
                 <View style={styles.itemIconContainer}>
-                    <MaterialIcon name={iconName} size={40}/>
+                    <MaterialIcon name={iconName} size={30}/>
                 </View>
                 <View style={styles.itemTextContainer}>
                     <Text style={styles.itemText}>{text}</Text>
@@ -71,7 +71,7 @@ function AccountScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: '#87f353',
+        backgroundColor: colors.background,
         flexDirection: 'column',
         justifyContent: 'flex-start',
         height: '100%',

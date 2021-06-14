@@ -37,7 +37,7 @@ function TextSelectScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: '#87f353',
+        backgroundColor: colors.background,
         flexDirection: 'column',
         justifyContent: 'flex-start',
         height: '100%',

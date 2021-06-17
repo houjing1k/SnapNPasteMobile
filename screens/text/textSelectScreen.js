@@ -1,16 +1,17 @@
-import * as React from 'react';
+import React from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, Image} from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
-import commonStyles from "../../common/commonStyles";
+import commonStyle from "../../common/commonStyles";
+import {vh, vw} from "react-native-expo-viewport-units";
 
-function TextSelectScreen({ route, navigation }) {
-    const { photo } = route.params;
+function TextSelectScreen({route, navigation}) {
+    const {image} = route.params;
 
-    const previewButtonAction=()=>{
+    const previewButtonAction = () => {
         navigation.push('TextConfirmation');
     }
-    const button2Action=()=>{
+    const button2Action = () => {
         // navigation.navigate('Signup');
     }
 
@@ -19,14 +20,12 @@ function TextSelectScreen({ route, navigation }) {
             <StatusBar/>
             <Header navigation={navigation} text={'Select Text'} backEnabled={true} cancelEnabled={true}/>
             <View style={styles.contentContainer}>
-                {/*<View>*/}
-                {/*    <Text>Select Text Screen</Text>*/}
-                {/*</View>*/}
-                {/*<Image source={{ uri: photo.uri }} style={{ width: 380, height: 550 }} />*/}
+                <Image source={{uri: image.uri}} style={{width: vw(100), height: vw(150), resizeMode: "contain"}}/>
             </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={previewButtonAction}>
-                    <Text style={styles.buttonText}>Preview</Text>
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]}
+                                  onPress={previewButtonAction}>
+                    <Text style={commonStyle.commonTextStyleLight}>Preview</Text>
                 </TouchableOpacity>
             </View>
 
@@ -43,31 +42,19 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     contentContainer: {
-        flex: 3,
-        backgroundColor: '#D0D0D0',
+        flex: 1,
+        backgroundColor: colors.color3,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
     },
     bottomContainer: {
-        flex: 1,
+        height: 120,
         // backgroundColor: '#183fc8',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'center'
     },
-    button: {
-        backgroundColor: colors.primaryColor,
-        width: 300,
-        height: 60,
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12
-    },
-    buttonText: {
-        fontSize: commonStyles.buttonLargeFontSize,
-    }
 })
 
 export default TextSelectScreen;

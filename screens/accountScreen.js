@@ -1,22 +1,26 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {vw} from "react-native-expo-viewport-units";
-import commonStyles from "../common/commonStyles";
+import commonStyle from "../common/commonStyles";
+import {AuthContext} from "../context/context";
 
-function AccountScreen({ navigation }) {
+function AccountScreen({navigation}) {
 
-    const logout=()=>{
-        navigation.navigate('Login');
+    const {signOut} = useContext(AuthContext);
+
+    const logout = () => {
+        signOut();
+        // navigation.navigate('Login');
     }
 
     const ProfileDetails = () => {
-        return(
+        return (
             <View style={styles.profileDetailsContainer}>
                 <View style={styles.avatarContainer}>
-                    <MaterialIcon name={'account-circle'} size={100}/>
+                    <MaterialIcon name={'account-circle'} size={vw(25)}/>
                     {/*<Text>Icon</Text>*/}
                 </View>
                 <View style={styles.detailContainer}>
@@ -28,10 +32,10 @@ function AccountScreen({ navigation }) {
     }
 
     const AccountItem = ({iconName, text, onClickAction}) => {
-        return(
+        return (
             <TouchableOpacity style={styles.itemContainer} onPress={onClickAction}>
                 <View style={styles.itemIconContainer}>
-                    <MaterialIcon name={iconName} size={30}/>
+                    <MaterialIcon name={iconName} size={30} color={colors.iconDark}/>
                 </View>
                 <View style={styles.itemTextContainer}>
                     <Text style={styles.itemText}>{text}</Text>
@@ -48,19 +52,21 @@ function AccountScreen({ navigation }) {
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 <ProfileDetails/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Account Settings'} iconName={'settings'} onClickAction={()=> navigation.push('AccountSetting')}/>
+                <AccountItem text={'Account Settings'} iconName={'settings'}
+                             onClickAction={() => navigation.push('AccountSetting')}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Upgrade to Premium'} iconName={'stars'} />
+                <AccountItem text={'Upgrade to Premium'} iconName={'stars'}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Feedback'} iconName={'chat'} onClickAction={()=> navigation.push('Feedback')}/>
+                <AccountItem text={'Feedback'} iconName={'chat'} onClickAction={() => navigation.push('Feedback')}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Rate Us'} iconName={'thumb-up'} />
+                <AccountItem text={'Rate Us'} iconName={'thumb-up'}/>
                 <View style={styles.divider}/>
             </ScrollView>
 
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={logout}>
-                    <Text style={styles.buttonText}>Log Out</Text>
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, {marginBottom: 20}]}
+                                  onPress={logout}>
+                    <Text style={commonStyle.commonTextStyleLight}>Log Out</Text>
                 </TouchableOpacity>
             </View>
 
@@ -89,18 +95,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end'
     },
-    button: {
-        backgroundColor: colors.primaryColor,
-        width: 300,
-        height: 60,
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12
-    },
-    buttonText: {
-        fontSize: commonStyles.buttonLargeFontSize,
-    },
     profileDetailsContainer: {
         // backgroundColor: 'yellow',
         flexDirection: 'row',
@@ -113,7 +107,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primaryColor,
         width: vw(25),
         height: vw(25),
-        borderRadius: vw(25/2),
+        borderRadius: vw(25 / 2),
         justifyContent: 'center',
         alignItems: 'center',
     },

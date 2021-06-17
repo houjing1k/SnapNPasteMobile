@@ -1,15 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
-import commonStyles from "../common/commonStyles";
+import commonStyle from "../common/commonStyles";
 
-function ConnectionsScreen({ navigation }) {
+function ConnectionsScreen({navigation}) {
 
-    const button1Action=()=>{
+    const button1Action = () => {
         // navigation.navigate('Home')
     }
-    const button2Action=()=>{
+    const button2Action = () => {
         // navigation.navigate('Signup');
     }
 
@@ -57,18 +57,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end'
     },
-    button: {
-        backgroundColor: colors.primaryColor,
-        width: 300,
-        height: 60,
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12
-    },
-    buttonText: {
-        fontSize: commonStyles.buttonLargeFontSize,
-    }
 })
 
 export default ConnectionsScreen;

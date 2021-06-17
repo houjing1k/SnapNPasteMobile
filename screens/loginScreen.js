@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useContext, useEffect, useState} from "react";
 import {
     View,
     StyleSheet,
@@ -8,22 +8,46 @@ import {
     StatusBar,
     TouchableOpacity,
     TextInput,
-    KeyboardAvoidingView, ScrollView, KeyboardAvoidingViewComponent
+    KeyboardAvoidingView, ScrollView, KeyboardAvoidingViewComponent, Keyboard
 } from 'react-native';
 import colors from "../common/colors";
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import commonStyles from "../common/commonStyles";
+import commonStyle from "../common/commonStyles";
+import {vw, vh} from "react-native-expo-viewport-units";
+import {AuthContext} from "../context/context";
 
-function LoginScreen({ navigation }) {
+function LoginScreen({navigation}) {
 
-    const login=()=>{
-        navigation.navigate('Home')
+    const {signIn} = useContext(AuthContext);
+
+    const loginAction = () => {
+        console.log('username: '+username);
+        console.log('password: '+password);
+        signIn(username, password);
+        // navigation.navigate('Home')
     }
-    const signup=()=>{
+    const signupAction = () => {
         navigation.navigate('Signup');
     }
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+        Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+
+        // cleanup function
+        return () => {
+            Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
+            Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+        };
+    }, []);
+
+    const [keyboardStatus, setKeyboardStatus] = useState(undefined);
+    const _keyboardDidShow = () => setKeyboardStatus(true);
+    const _keyboardDidHide = () => setKeyboardStatus(false);
 
     return (
         <KeyboardAvoidingView style={styles.container}>
@@ -31,20 +55,24 @@ function LoginScreen({ navigation }) {
 
             <View style={styles.contentContainer}>
                 <View style={styles.logoContainer}>
-                    <Icon name="camera-retro" size={150}/>
-                    <Text style={styles.title}>Snap-N-Paste</Text>
+                    <Icon name="camera-retro" size={120} color={'#000000'}/>
+                    {
+                        keyboardStatus ? <View/> : <Text style={styles.title}>Snap-N-Paste</Text>
+                    }
                 </View>
                 <View style={styles.inputContainer}>
                     <View style={styles.inputSetContainer}>
-                        <Icon name="envelope" size={35} style={styles.inputIcon}/>
+                        <Icon name="envelope" size={35} style={styles.inputIcon} color={colors.grey}/>
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Email"}/>
+                            <TextInput style={styles.input} placeholder={"Email"}
+                                       onChangeText={(text) => setUsername(text)}/>
                         </View>
                     </View>
                     <View style={styles.inputSetContainer}>
-                        <MaterialIcon name="lock" size={35} style={styles.inputIcon}/>
+                        <MaterialIcon name="lock" size={35} style={styles.inputIcon} color={colors.grey}/>
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Password"}/>
+                            <TextInput style={styles.input} placeholder={"Password"} secureTextEntry={true}
+                                       onChangeText={(text) => setPassword(text)}/>
                         </View>
                     </View>
                     <TouchableOpacity style={styles.forgetPassword}>
@@ -55,11 +83,11 @@ function LoginScreen({ navigation }) {
             </View>
 
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={login}>
-                    <Text style={styles.buttonText}>Login</Text>
+                <TouchableOpacity style={commonStyle.buttonDual} onPress={loginAction}>
+                    <Text style={commonStyle.commonTextStyleLight}>Login</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={signup}>
-                    <Text style={styles.buttonText}>Signup</Text>
+                <TouchableOpacity style={commonStyle.buttonDual} onPress={signupAction}>
+                    <Text style={commonStyle.commonTextStyleLight}>Signup</Text>
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
@@ -92,23 +120,21 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.primaryColor,
         width: 300,
-        height: 60,
+        height: 50,
         borderRadius: 30,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 12
+        marginBottom: 12,
     },
     logoContainer: {
         // backgroundColor: 'yellow',
         alignItems: 'center',
     },
     title: {
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: 'bold',
     },
-    buttonText: {
-        fontSize: commonStyles.buttonLargeFontSize,
-    },
+    buttonText: {},
     inputContainer: {
         // backgroundColor: 'yellow',
         marginTop: 20,
@@ -122,17 +148,18 @@ const styles = StyleSheet.create({
         // backgroundColor: 'green',
         width: 250,
         height: 50,
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         marginVertical: 5,
         borderWidth: 2,
+        borderColor: colors.color3,
         // alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 25,
+        borderRadius: 8,
     },
     input: {
         // backgroundColor: '#FFFFFF',
         // borderWidth: 2,
-        fontSize: 18,
+        fontSize: 17,
     },
     inputIcon: {
         marginRight: 10,
@@ -144,8 +171,8 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
     },
     forgetPasswordText: {
-        fontSize: 15,
-        textDecorationLine: 'underline'
+        fontSize: 14,
+        // textDecorationLine: 'underline'
     }
 })
 

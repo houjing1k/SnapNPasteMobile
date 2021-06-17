@@ -1,20 +1,20 @@
 import React from "react";
 import {View, StyleSheet, Text, Button, TouchableOpacity} from 'react-native';
-import { Icon } from 'react-native-elements'
+import {Icon} from 'react-native-elements'
 import colors from "../common/colors";
 
-function Header({ navigation, text, backEnabled, cancelEnabled}) {
+function Header({navigation, text, backEnabled, cancelEnabled}) {
 
-    const back=()=>{
+    const back = () => {
         navigation.pop();
     }
-    const cancel=()=>{
+    const cancel = () => {
         navigation.navigate('Home');
     }
 
     const BackButton = () => {
-        if(backEnabled)
-            return(
+        if (backEnabled)
+            return (
                 <View style={styles.backButtonContainer}>
                     <TouchableOpacity style={styles.backButton} onPress={back}>
                         <Icon
@@ -26,15 +26,15 @@ function Header({ navigation, text, backEnabled, cancelEnabled}) {
                     </TouchableOpacity>
                 </View>
             );
-        else return(
+        else return (
             <View style={styles.backButtonContainer}>
-                <View style={styles.backButton} />
+                <View style={styles.backButton}/>
             </View>
         );
     };
     const CancelButton = () => {
-        if(cancelEnabled)
-            return(
+        if (cancelEnabled)
+            return (
                 <View style={styles.cancelButtonContainer}>
                     <TouchableOpacity style={styles.cancelButton} onPress={cancel}>
                         <Icon
@@ -46,15 +46,15 @@ function Header({ navigation, text, backEnabled, cancelEnabled}) {
                     </TouchableOpacity>
                 </View>
             );
-        else return(
+        else return (
             <View style={styles.cancelButtonContainer}>
-                <View style={styles.cancelButton} />
+                <View style={styles.cancelButton}/>
             </View>
         );
     };
 
 
-    return(
+    return (
         <View style={styles.container}>
             <BackButton/>
             <View style={styles.centerContainer}>
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#123462',
         width: 70,
     },
-    centerContainer:{
+    centerContainer: {
         // backgroundColor: '#833462',
         justifyContent: 'center'
     },

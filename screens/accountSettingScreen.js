@@ -1,15 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
-import commonStyles from "../common/commonStyles";
+import commonStyle from "../common/commonStyles";
 
-function AccountSettingScreen({ navigation }) {
+function AccountSettingScreen({navigation}) {
 
-    const button1Action=()=>{
+    const button1Action = () => {
         // navigation.navigate('Home')
     }
-    const button2Action=()=>{
+    const button2Action = () => {
         // navigation.navigate('Signup');
     }
 
@@ -23,11 +23,11 @@ function AccountSettingScreen({ navigation }) {
                 </View>
             </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={button1Action}>
-                    <Text style={styles.text}>Button 1</Text>
+                <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>
+                    <Text style={[commonStyle.commonTextStyleLight]}>Button 1</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={button2Action}>
-                    <Text style={styles.text}>Button 2</Text>
+                <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button2Action}>
+                    <Text style={[commonStyle.commonTextStyleLight]}>Button 2</Text>
                 </TouchableOpacity>
             </View>
 
@@ -57,18 +57,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end'
     },
-    button: {
-        backgroundColor: colors.primaryColor,
-        width: 300,
-        height: 60,
-        borderRadius: 30,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12
-    },
-    buttonText: {
-        fontSize: commonStyles.buttonLargeFontSize,
-    }
 })
 
 export default AccountSettingScreen;

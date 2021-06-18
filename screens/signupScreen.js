@@ -15,22 +15,99 @@ import colors from "../common/colors";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import commonStyles from "../common/commonStyles";
+import {useEffect, useState} from "react";
+import commonStyle from "../common/commonStyles";
+import axios from "axios";
 
-function SignupScreen({ navigation }) {
+function SignupScreen({navigation}) {
 
-    const register=()=>{
-        Alert.alert(
-            "Registration Successful",
-            "Your account has been created.",
-            [
-                { text: "OK", onPress: () => {
-                    console.log("OK Pressed");
-                    navigation.pop();
-                }}
-            ]
-        );
+    const [data, setData] = useState({
+        email: '',
+        name: '',
+        password: '',
+        passwordCheck: '',
+        isValidEmail: false,
+        isValidName: false,
+        isValidPassword: false,
+        isPasswordMatch: false,
+    })
+
+    const register = async () => {
+        if (data.isValidEmail && data.isValidPassword && data.isPasswordMatch) {
+            await axios.post('http://byteus.me:8000/auth/register', {
+                email: data.email,
+                password: data.password,
+            })
+                .then((response) => {
+                    console.log(response);
+                    Alert.alert(
+                        "Registration Successful",
+                        "Your account has been created.",
+                        [
+                            {
+                                text: "OK", onPress: () => {
+                                    navigation.pop();
+                                }
+                            }]
+                    );
+                })
+                .catch((error) => {
+                    console.log(error);
+                    Alert.alert(
+                        "Registration Unsuccessful",
+                        "Account already exists",
+                        [{
+                            text: "OK", onPress: () => {
+                            }
+                        }]
+                    );
+                });
+        } else {
+            Alert.alert(
+                "Invalid Input",
+                (!data.isValidEmail ? 'Invalid Email\n' : '') +
+                (!data.isValidName ? 'Invalid Name\n' : '') +
+                (!data.isValidPassword ? 'Invalid Password\n' : '') +
+                (!data.isPasswordMatch ? 'Password does not match\n' : ''),
+                [{text: "OK"}]
+            )
+        }
+
 
     }
+
+    const handleEmailChange = (val) => {
+        setData({
+            ...data,
+            email: val,
+            isValidEmail: val !== '',
+        });
+    }
+    const handleNameChange = (val) => {
+        setData({
+            ...data,
+            name: val,
+            isValidName: val !== '',
+        })
+    }
+    const handlePasswordChange = (val) => {
+        setData({
+            ...data,
+            password: val,
+            isValidPassword: val !== '',
+        })
+    }
+    const handlePasswordCheckChange = (val) => {
+        setData({
+            ...data,
+            passwordCheck: val,
+            isPasswordMatch: val === data.password,
+        })
+    }
+
+    useEffect(() => {
+        console.log(data);
+    }, [data])
 
     return (
         <View style={styles.container}>
@@ -42,23 +119,29 @@ function SignupScreen({ navigation }) {
                     <View style={styles.inputSetContainer}>
                         <Icon name="envelope" size={35} style={styles.inputIcon}/>
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Email"}/>
+                            <TextInput style={styles.input} placeholder={"Email"}
+                                       onChangeText={(val) => handleEmailChange(val)}/>
                         </View>
                     </View>
                     <View style={styles.inputSetContainer}>
                         <MaterialIcon name="face" size={35} style={styles.inputIcon}/>
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Name"}/>
+                            <TextInput style={styles.input} placeholder={"Name"}
+                                       onChangeText={(val) => handleNameChange(val)}/>
                         </View>
                     </View>
                     <View style={styles.inputSetContainer}>
                         <MaterialIcon name="lock" size={35} style={styles.inputIcon}/>
                         <View style={styles.doubleInputContainer}>
                             <View style={styles.inputFieldContainer}>
-                                <TextInput style={styles.input} placeholder={"Password"}/>
+                                <TextInput style={styles.input} placeholder={"Password"}
+                                           onChangeText={(val) => handlePasswordChange(val)}
+                                           secureTextEntry={true}/>
                             </View>
                             <View style={styles.inputFieldContainer}>
-                                <TextInput style={styles.input} placeholder={"Re-enter Password"}/>
+                                <TextInput style={styles.input} placeholder={"Re-enter Password"}
+                                           onChangeText={(val) => handlePasswordCheckChange(val)}
+                                           secureTextEntry={true}/>
                             </View>
                         </View>
                     </View>
@@ -66,8 +149,8 @@ function SignupScreen({ navigation }) {
             </ScrollView>
 
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={register}>
-                    <Text style={styles.buttonText}>Create Account</Text>
+                <TouchableOpacity style={commonStyle.buttonSingle} onPress={register}>
+                    <Text style={commonStyle.commonTextStyleLight}>Create Account</Text>
                 </TouchableOpacity>
             </View>
 
@@ -95,7 +178,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#183fc8',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'center'
     },
     button: {
         backgroundColor: colors.primaryColor,
@@ -111,13 +194,13 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         // backgroundColor: 'yellow',
-        marginTop: 30,
+        marginTop: 15,
     },
     inputSetContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 40,
+        marginBottom: 30,
     },
     inputFieldContainer: {
         // backgroundColor: 'green',

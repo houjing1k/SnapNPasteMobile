@@ -23,16 +23,50 @@ function LoginScreen({navigation}) {
     const {signIn} = useContext(AuthContext);
 
     const loginAction = () => {
-        console.log('username: '+username);
-        console.log('password: '+password);
-        signIn(username, password);
+        console.log('username: ' + data.email);
+        console.log('password: ' + data.password);
+        signIn(data.email, data.password);
         // navigation.navigate('Home')
     }
     const signupAction = () => {
         navigation.navigate('Signup');
     }
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+
+    const [data, setData] = useState({
+        email: '',
+        password: '',
+        check_textInputChange: false,
+        secureTextEntry: true,
+    })
+
+    const handleEmailChange = (val) => {
+        if (val.length !== 0) {
+            setData({
+                ...data,
+                email: val,
+                check_textInputChange: true,
+            })
+        } else {
+            setData({
+                ...data,
+                email: val,
+                check_textInputChange: false,
+            })
+        }
+    };
+    const handlePasswordChange = (val) => {
+        setData({
+            ...data,
+            password: val,
+            check_textInputChange: true,
+        })
+    };
+    const updateSecureTextEntry = () => {
+        setData({
+            ...data,
+            secureTextEntry: !data.secureTextEntry
+        })
+    }
 
     useEffect(() => {
         Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
@@ -62,17 +96,29 @@ function LoginScreen({navigation}) {
                 </View>
                 <View style={styles.inputContainer}>
                     <View style={styles.inputSetContainer}>
-                        <Icon name="envelope" size={35} style={styles.inputIcon} color={colors.grey}/>
+                        <Icon name="envelope" size={30} style={styles.inputIcon} color={colors.grey}/>
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Email"}
-                                       onChangeText={(text) => setUsername(text)}/>
+                            <TextInput
+                                style={[styles.input, {width: 220}]}
+                                placeholder={"Email"}
+                                onChangeText={(val) => handleEmailChange(val)}
+                            />
                         </View>
                     </View>
                     <View style={styles.inputSetContainer}>
-                        <MaterialIcon name="lock" size={35} style={styles.inputIcon} color={colors.grey}/>
+                        <MaterialIcon name="lock" size={30} style={styles.inputIcon} color={colors.grey}/>
                         <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Password"} secureTextEntry={true}
-                                       onChangeText={(text) => setPassword(text)}/>
+                            <TextInput
+                                style={styles.input}
+                                placeholder={"Password"}
+                                secureTextEntry={data.secureTextEntry}
+                                onChangeText={(val) => handlePasswordChange(val)}
+                            />
+                            <TouchableOpacity style={styles.visibilityIconButton} onPress={updateSecureTextEntry}>
+                                <MaterialIcon name={data.secureTextEntry ? 'visibility-off' : 'visibility'}
+                                              size={25} color={colors.iconDark}/>
+                            </TouchableOpacity>
+
                         </View>
                     </View>
                     <TouchableOpacity style={styles.forgetPassword}>
@@ -140,6 +186,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     inputSetContainer: {
+        // backgroundColor: 'yellow',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -148,18 +195,27 @@ const styles = StyleSheet.create({
         // backgroundColor: 'green',
         width: 250,
         height: 50,
-        paddingHorizontal: 15,
+        paddingLeft: 15,
+        paddingRight: 10,
         marginVertical: 5,
         borderWidth: 2,
         borderColor: colors.color3,
-        // alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         borderRadius: 8,
     },
     input: {
         // backgroundColor: '#FFFFFF',
         // borderWidth: 2,
+        width: 185,
         fontSize: 17,
+        // marginRight: 5,
+    },
+    visibilityIconButton: {
+        // borderWidth: 2,
+        alignItems: 'center',
+        width: 30,
     },
     inputIcon: {
         marginRight: 10,

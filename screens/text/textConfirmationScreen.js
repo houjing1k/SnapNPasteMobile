@@ -1,13 +1,33 @@
 import React from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    SafeAreaView,
+    StatusBar,
+    TouchableOpacity,
+    ScrollView,
+    Alert
+} from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
 
-function TextConfirmationScreen({navigation}) {
+function TextConfirmationScreen({route, navigation}) {
+
+    const {text} = route.params;
 
     const pasteButtonAction = () => {
-        navigation.navigate('Home')
+        Alert.alert(
+            "Paste to PC",
+            "Successfully Pasted to PC (Fake)",
+            [
+                { text: "OK", onPress: () => {
+                        navigation.navigate('Home');
+                    }}
+            ]
+        );
     }
     const button2Action = () => {
         // navigation.navigate('Signup');
@@ -18,8 +38,10 @@ function TextConfirmationScreen({navigation}) {
             <StatusBar/>
             <Header navigation={navigation} text={'Preview Text'} backEnabled={true} cancelEnabled={true}/>
             <View style={styles.contentContainer}>
-                <View>
-                    <Text>Text Confirmation Screen</Text>
+                <View style={styles.textContainer}>
+                    <ScrollView style={{}} showsVerticalScrollIndicator={false}>
+                        <Text style={styles.text}>{text}</Text>
+                    </ScrollView>
                 </View>
             </View>
             <View style={styles.bottomContainer}>
@@ -42,19 +64,31 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     contentContainer: {
-        flex: 3,
-        backgroundColor: '#D0D0D0',
+        flex: 1,
+        // backgroundColor: '#D0D0D0',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
     },
     bottomContainer: {
-        flex: 1,
+        // flex: 1,
         // backgroundColor: '#183fc8',
+        height: 120,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'center'
     },
+    textContainer: {
+        marginHorizontal: 15,
+        padding: 20,
+        borderWidth: 2,
+        borderColor: colors.iconDark,
+        borderRadius: 20,
+    },
+    text: {
+        fontSize: 18,
+    }
+
 })
 
 export default TextConfirmationScreen;

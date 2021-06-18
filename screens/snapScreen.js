@@ -9,7 +9,8 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import commonStyle from "../common/commonStyles";
 import axios from "axios";
 import * as FileSystem from 'expo-file-system';
-import {clear} from "react-native/Libraries/LogBox/Data/LogBoxData";
+import * as ImageManipulator from 'expo-image-manipulator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function SnapScreen({route, navigation}) {
 
@@ -27,6 +28,16 @@ function SnapScreen({route, navigation}) {
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
+            }
+            try {
+                // await AsyncStorage.setItem('flashVal','2');
+                let val = await AsyncStorage.getItem('flashVal');
+                console.log('get flashval: ' + val);
+                if (val != null) {
+                    setFlashValue(parseInt(val));
+                }
+            } catch (e) {
+                console.log(e);
             }
         })();
     }, []);
@@ -70,19 +81,19 @@ function SnapScreen({route, navigation}) {
         // setFlashIcon(flashOptions(flashValue))
         console.log('flashValue: ' + flashValue);
         setFlashIcon(flashOptions(flashValue));
+        let mode = null;
         switch (flashValue) {
             case 0:
-                setFlashMode(Camera.Constants.FlashMode.auto);
-                //setType(Camera.Constants.Type.back);
+                mode = Camera.Constants.FlashMode.auto;
                 break;
             case 1:
-                setFlashMode(Camera.Constants.FlashMode.on);
-                //setType(Camera.Constants.Type.front);
+                mode = Camera.Constants.FlashMode.on;
                 break;
             case 2:
-                setFlashMode(Camera.Constants.FlashMode.off);
+                mode = Camera.Constants.FlashMode.off;
                 break;
         }
+        setFlashMode(mode);
     }, [flashValue]);
     useEffect(() => {
         console.log('flashIcon: ' + flashIcon);
@@ -106,7 +117,16 @@ function SnapScreen({route, navigation}) {
     // UI Actions
     const cameraFlashAction = () => {
         console.log('Pressed Flash');
-        setFlashValue((flashValue + 1) % 3);
+        let newFlashValue = (flashValue + 1) % 3;
+        setFlashValue(newFlashValue);
+        (async () => {
+            try {
+                await AsyncStorage.setItem('flashVal', newFlashValue.toString());
+                console.log('stored flashVal: ' + newFlashValue);
+            } catch (e) {
+                console.log(e);
+            }
+        })();
     }
     const imagePickerAction = async () => {
         console.log('Pressed Image Picker');
@@ -115,10 +135,9 @@ function SnapScreen({route, navigation}) {
     const snapButtonAction = async () => {
         console.log('Pressed Snap');
 
-        let photo = null;
         if (cameraRef) {
             image = await cameraRef.takePictureAsync();
-            await getOCRResults();
+            // await getOCRResults();
             navigateNext();
         }
     }
@@ -152,17 +171,23 @@ function SnapScreen({route, navigation}) {
 
         let uploadResponse, uploadResult;
         try {
-            //uploadResponse = await uploadImageAsync('https://images.twinkl.co.uk/tw1n/image/private/t_630/image_repo/6e/f9/T-L-5065-200-Common-Words-List_ver_3.jpg');
-            uploadResponse = await uploadImageAsync(image.uri);
+            const resizedImage = await ImageManipulator.manipulateAsync(
+                image.uri,
+                [{resize: {width: 1000}}],
+                {compress: 0.6, format: 'jpeg'},
+            );
+            console.log('downsized photo', resizedImage);
+            // uploadResponse = await uploadImageAsync('https://images.twinkl.co.uk/tw1n/image/private/t_630/image_repo/6e/f9/T-L-5065-200-Common-Words-List_ver_3.jpg');
+            uploadResponse = await uploadImageAsync(resizedImage.uri);
             uploadResult = await uploadResponse.json();
         } catch (e) {
-            console.log({uploadResponse});
-            console.log({uploadResult});
+            // console.log({uploadResponse});
+            // console.log({uploadResult});
             console.log({e});
             alert('Upload failed, sorry :(');
         }
-        console.log('response: ');
-        console.log({uploadResponse});
+        // console.log('response: ');
+        // console.log({uploadResponse});
         console.log('results: ');
         console.log({uploadResult});
 
@@ -194,97 +219,26 @@ function SnapScreen({route, navigation}) {
         return fetch(apiUrl, options);
     }
 
-    const fileUpload = (file) => {
-        const url = 'http://example.com/file-upload';
-        const formData = new FormData();
-        formData.append('file', file)
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
-        return axios.post(url, formData, config)
-            .then(function (response) {
-                //handle success
-                console.log('Success');
-                console.log(response);
-            })
-            .catch(function (response) {
-                //handle error
-                console.log('Error');
-                console.log(response);
-            });
-    }
-
-    const postData = async (props) => {
-        const FormData = require('form-data');
-        //const base64 = await FileSystem.readAsStringAsync(props.uri, { encoding: 'base64' });
-        const formData = new FormData();
-        //formData.append('file', props);
-
-        const config = {headers: {'Content-Type': 'multipart/form-data'}};
-        const res = await axios.post('http://byteus.me:8000/ocr', formData, config)
-            .then(function (response) {
-                //handle success
-                console.log('Success');
-                console.log(response);
-            })
-            .catch(function (response) {
-                //handle error
-                console.log('Error');
-                console.log(response);
-            });
-        console.log(res);
-
-        // const article = { title: 'React POST Request Example' };
-        // axios.post('http://byteus.me:8000/ocr', formData)
-        //     .then(response => console.log(response))
-        //     .catch(response => console.log(response));
-
-        // var form = new FormData();
-        //
-        // form.append('file', props);
-        //
-        // fetch('http://byteus.me:8000/ocr', {
-        //     method: 'POST',
-        //     body: form,
-        // }).then(response => {
-        //     console.log(response)
-        // }).catch(error => {
-        //     console.error(error);
-        // })
-
-        // await axios({
-        //     method: "post",
-        //     url: "http://byteus.me:8000/ocr",
-        //     data: formData,
-        //     headers: { "Content-Type": "multipart/form-data" },
-        // })
-        //     .then(function (response) {
-        //         //handle success
-        //         console.log('Success');
-        //         console.log(response);
-        //     })
-        //     .catch(function (response) {
-        //         //handle error
-        //         console.log('Error');
-        //         console.log(response);
-        //     });
-
-        // await axios.get(`http://byteus.me:8000/`)
-        //     .then(res => {
-        //         console.log('get res: '+res.data);
-        //     })
-        //     .catch(res => {
-        //         console.log('error: '+res);
-        //     })
-
-        // axios.get(`https://jsonplaceholder.typicode.com/users`)
-        //     .then(res => {
-        //         //const persons = res.data;
-        //         console.log(res.data);
-        //     })
-    }
+    // const postData = async (props) => {
+    //     const FormData = require('form-data');
+    //     //const base64 = await FileSystem.readAsStringAsync(props.uri, { encoding: 'base64' });
+    //     const formData = new FormData();
+    //     //formData.append('file', props);
+    //
+    //     const config = {headers: {'Content-Type': 'multipart/form-data'}};
+    //     const res = await axios.post('http://byteus.me:8000/ocr', formData, config)
+    //         .then(function (response) {
+    //             //handle success
+    //             console.log('Success');
+    //             console.log(response);
+    //         })
+    //         .catch(function (response) {
+    //             //handle error
+    //             console.log('Error');
+    //             console.log(response);
+    //         });
+    //     console.log(res);
+    // }
 
 
     return (

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
 import colors from "../common/colors";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import commonStyle from "../common/commonStyles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 function HomeScreen({navigation}) {
 
@@ -34,6 +36,34 @@ function HomeScreen({navigation}) {
             onPressAction: () => navigation.push('Snap', {snapMode: 'Text'}),
         },
     ]
+
+    // useEffect(() => {
+    //     (async () => {
+    //         let userToken = null;
+    //         try {
+    //             userToken = await AsyncStorage.getItem('userToken');
+    //         } catch (e) {
+    //             console.log(e);
+    //         }
+    //         console.log('user token retrieved: ' + userToken);
+    //         await axios.get(
+    //             'http://byteus.me:8000/users/me', {
+    //                 headers: {
+    //                     'Authorization': `Bearer ${userToken}`,
+    //                 },
+    //             })
+    //             .then((response) => {
+    //                 console.log('/////////////////////////')
+    //                 console.log('usertoken///: ' + userToken);
+    //                 console.log(response.data.email);
+    //                 let userName = response.data.email;
+    //                 console.log('---------------username and token: ' + userName + userToken);
+    //
+    //                 // console.log(loginState)
+    //             })
+    //             .catch((error) => console.log(error));
+    //     })()
+    // }, [])
 
     const Header = () => {
         const manageAccount = () => {
@@ -92,7 +122,8 @@ function HomeScreen({navigation}) {
                     style={[snapItemStyles.snapItemButton, commonStyle.dropShadow, isLocked ? {backgroundColor: colors.color4} : '']}
                     disabled={isLocked} onPress={onPressAction}>
                     <View style={snapItemStyles.snapItemIconContainer}>
-                        <MaterialIcon name={iconName} size={45} color={colors.iconDark} style={snapItemStyles.inputIcon}/>
+                        <MaterialIcon name={iconName} size={45} color={colors.iconDark}
+                                      style={snapItemStyles.inputIcon}/>
                     </View>
                     <View style={snapItemStyles.snapItemLockedIconContainer}>
                         <LockIcon/>

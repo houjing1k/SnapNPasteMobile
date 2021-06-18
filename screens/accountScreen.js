@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
@@ -25,7 +25,7 @@ function AccountScreen({navigation}) {
                 </View>
                 <View style={styles.detailContainer}>
                     <Text style={styles.nameText}>Kong Hou Jing</Text>
-                    <Text style={styles.emailText}>xxxxxxxxxxxxxx@gmail.com</Text>
+                    <Text style={styles.emailText}>xxxxxxxxx.gmail.com</Text>
                 </View>
             </View>
         )
@@ -55,7 +55,7 @@ function AccountScreen({navigation}) {
                 <AccountItem text={'Account Settings'} iconName={'settings'}
                              onClickAction={() => navigation.push('AccountSetting')}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Upgrade to Premium'} iconName={'stars'}/>
+                <AccountItem text={'Upgrade to Premium (Coming Soon)'} iconName={'stars'}/>
                 <View style={styles.divider}/>
                 <AccountItem text={'Feedback'} iconName={'chat'} onClickAction={() => navigation.push('Feedback')}/>
                 <View style={styles.divider}/>

@@ -1,18 +1,17 @@
 import * as React from 'react';
-import {Button, View, Text, ActivityIndicator} from 'react-native';
+import {Button, View, Text, ActivityIndicator, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import HomeStackNavigator from './routes/homeStack';
 import RootStackNavigator from "./routes/rootStack";
-import {useEffect, useMemo, useReducer, useState} from "react";
+import {useContext, useEffect, useMemo, useReducer, useState} from "react";
 import colors from "./common/colors";
 import commonStyle from "./common/commonStyles";
 import {AuthContext} from "./context/context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 function App() {
-    // const [isLoading, setIsLoading] = useState(true);
-    // const [userToken, setUserToken] = useState(null);
 
     const initialLoginState = {
         isLoading: true,
@@ -57,16 +56,48 @@ function App() {
     const authContext = useMemo(() => ({
         signIn: async (userName, password) => {
             let userToken = null;
-            if (userName == 'user' && password == '123') {
-                try {
-                    userToken = '123456';
-                    await AsyncStorage.setItem('userToken', userToken);
-                } catch (e) {
-                    console.log(e);
-                }
-            }
+            const formData = new FormData();
+            formData.append('username', userName);
+            formData.append('password', password);
+            axios.post(
+                'http://byteus.me:8000/auth/jwt/login',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                },
+            )
+                .then(async (response) => {
+                    console.log(response);
+                    try {
+                        let data = response.data;
+                        console.log('/////////data//////////')
+                        console.log(data);
+                        userToken = data.access_token;
+                        console.log(userToken);
+                        await AsyncStorage.setItem('userToken', userToken);
+                        console.log('username:' + userName);
+                        dispatch({type: 'LOGIN', id: userName, token: userToken});
+                        console.log(loginState);
+                    } catch (e) {
+                        console.log('error 123')
+                        console.log(e);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    Alert.alert(
+                        "Invalid username or password",
+                        "",
+                        [{
+                            text: "OK", onPress: () => {
+                            }
+                        }]
+                    );
+                });
             console.log('user token: ' + userToken);
-            dispatch({type: 'LOGIN', id: userName, token: userToken});
+
         },
         signOut: async () => {
             try {
@@ -77,9 +108,7 @@ function App() {
             dispatch({type: 'LOGOUT'});
         },
         signUp: () => {
-            console.log('user token: ' + userToken);
-            setUserToken('aaaa');
-            setIsLoading(false);
+            // console.log('user token: ' + userToken);
         },
     }), []);
 
@@ -88,10 +117,10 @@ function App() {
             let userToken = null;
             try {
                 userToken = await AsyncStorage.getItem('userToken');
+                console.log('fetched userToken: ' + userToken)
             } catch (e) {
                 console.log(e);
             }
-            console.log('user token: ' + userToken);
             dispatch({type: 'REGISTER', token: userToken});
         }, 1000);
     }, []);
@@ -106,6 +135,8 @@ function App() {
     }
 
     return (
+
+
         <AuthContext.Provider value={authContext}>
             <NavigationContainer>
                 {loginState.userToken !== null ? <HomeStackNavigator/> : <RootStackNavigator/>}

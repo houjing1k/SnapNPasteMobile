@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {
     View,
     StyleSheet,
@@ -7,8 +7,8 @@ import {
     SafeAreaView,
     StatusBar,
     TouchableOpacity,
-    Image,
-    ActivityIndicator
+
+    ActivityIndicator, ImageBackground, Dimensions
 } from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
@@ -16,47 +16,56 @@ import commonStyle from "../../common/commonStyles";
 import {vh, vw} from "react-native-expo-viewport-units";
 import * as ImageManipulator from "expo-image-manipulator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Canvas} from "konva/lib/Canvas";
+import Svg, {Circle, Rect, Polygon, Image, G} from "react-native-svg";
+import BoundingBox from "../../components/ocrBoundingBox";
+import {useSelector} from "react-redux";
+import {SelectionContext} from "../../context/context";
 
 function TextSelectScreen({route, navigation}) {
     const {image} = route.params;
 
     const [isLoading, setIsLoading] = useState(true);
     const [ocrResults, setOcrResults] = useState([]);
-    const [selectedText, setSelectedText] = useState('');
+    const [selectedText, setSelectedText] = useContext(SelectionContext);
+
+    const imageFrameWidth = Dimensions.get('window').width;
+    const imageFrameHeight = imageFrameWidth / 3 * 4;
+    const imageWidth = 1200;
+    const imageHeight = 1600;
 
     useEffect(() => {
-        console.log('useeffect called')
+        console.log('Fetching OCR Results...')
         setIsLoading(true);
-        setTimeout(async () => {
+        (async () => {
             await getOCRResults();
             setIsLoading(false);
-        }, 50);
+        })()
+        console.log('imageFrameWidth: ' + imageFrameWidth);
+        console.log('imageWidth: ' + image.width);
     }, [])
 
     const previewButtonAction = () => {
         let text = '';
-        // for (let i = 0; i < ocrResults.length; i++) {
-        //     text.concat(' ' + ocrResults[i]);
-        // }
-        text=ocrResults.join(' ');
-        console.log('//////////////////');
-        console.log(ocrResults);
+        // text = ocrResults.map(e => e.text).join(' ');
+        // text=ocrResults.join(' ');
+        text = selectedText.map(e => ocrResults[e].text).join(' ');
+
+        // console.log(ocrResults);
+        console.log('/////////// Selected Text ///////////////');
         console.log(text);
         navigation.push('TextConfirmation', {text: text});
     }
 
     //Post Image to Server
     const getOCRResults = async () => {
-
         console.log('photo', image);
-        //fileUpload(image);
-        //await postData('https://www.google.com.sg/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png');
 
         let uploadResponse, uploadResult;
         try {
             const resizedImage = await ImageManipulator.manipulateAsync(
                 image.uri,
-                [{resize: {width: 1000}}],
+                [{resize: {width: imageWidth}}],
                 {compress: 0.6, format: 'jpeg'},
             );
             console.log('downsized photo', resizedImage);
@@ -71,16 +80,14 @@ function TextSelectScreen({route, navigation}) {
         }
         // console.log('response: ');
         // console.log({uploadResponse});
-        console.log('results: ');
-        console.log({uploadResult});
-
-        console.log(uploadResult[1])
+        // console.log('results: ');
+        // console.log({uploadResult});
         setOcrResults(uploadResult);
     }
 
     async function uploadImageAsync(uri) {
         console.log('uri: ' + uri);
-        let apiUrl = 'http://byteus.me:8000/ocr';
+        let apiUrl = 'http://byteus.me:8000/ocrfull';
         let uriParts = uri.split('.');
         let fileType = uriParts[uriParts.length - 1];
 
@@ -103,6 +110,7 @@ function TextSelectScreen({route, navigation}) {
         return fetch(apiUrl, options);
     }
 
+
     if (isLoading) {
         return (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -116,8 +124,23 @@ function TextSelectScreen({route, navigation}) {
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Select Text'} backEnabled={true} cancelEnabled={true}/>
-            <View style={styles.contentContainer}>
-                <Image source={{uri: image.uri}} style={{width: vw(100), height: vw(150), resizeMode: "contain"}}/>
+            <View style={[styles.contentContainer]}>
+                {/*<View>*/}
+                {/*    <Image source={{uri: image.uri}}*/}
+                {/*           style={{*/}
+                {/*               width: imageFrameWidth,*/}
+                {/*               height: imageFrameHeight,*/}
+                {/*               resizeMode: "contain",*/}
+                {/*               backgroundColor: 'yellow'*/}
+                {/*           }}>*/}
+                {/*    </Image>*/}
+                {/*</View>*/}
+                <View>
+                    <Svg height={imageFrameHeight} width={imageFrameWidth} viewBox="0 0 1200 1600">
+                        <Image width={1200} height={1600} href={image.uri}/>
+                        {ocrResults.map(e => <BoundingBox bb={e.bb} index={ocrResults.indexOf(e)} key={ocrResults.indexOf(e)}/>)}
+                    </Svg>
+                </View>
             </View>
             <View style={styles.bottomContainer}>
                 <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]}
@@ -144,7 +167,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.color3,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start'
     },
     bottomContainer: {
         height: 120,

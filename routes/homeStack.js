@@ -1,8 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from "@react-navigation/stack";
 import HomeScreen from '../screens/homeScreen';
-import LoginScreen from '../screens/loginScreen';
-import SignupScreen from '../screens/signupScreen';
 import SnapScreen from "../screens/snapScreen";
 import ConnectionsScreen from "../screens/connectionsScreen";
 import AccountSettingScreen from "../screens/accountSettingScreen";
@@ -22,8 +20,6 @@ function HomeStackNavigator() {
     return (
         <HomeStack.Navigator initialRouteName="Home" headerMode='none'>
             <HomeStack.Screen name="Home" component={HomeScreen}/>
-            {/*<HomeStack.Screen name="Login" component={LoginScreen}/>*/}
-            {/*<HomeStack.Screen name="Signup" component={SignupScreen}/>*/}
             <HomeStack.Screen name="Snap" component={SnapScreen} options={{unmountOnBlur: true}}/>
             <HomeStack.Screen name="Connections" component={ConnectionsScreen}/>
             <HomeStack.Screen name="Account" component={AccountScreen}/>

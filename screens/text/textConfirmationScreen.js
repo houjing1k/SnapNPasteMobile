@@ -13,6 +13,7 @@ import {
 import Header from "../../components/header";
 import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
+import {vw} from "react-native-expo-viewport-units";
 
 function TextConfirmationScreen({route, navigation}) {
 
@@ -23,9 +24,11 @@ function TextConfirmationScreen({route, navigation}) {
             "Paste to PC",
             "Successfully Pasted to PC (Fake)",
             [
-                { text: "OK", onPress: () => {
+                {
+                    text: "OK", onPress: () => {
                         navigation.navigate('Home');
-                    }}
+                    }
+                }
             ]
         );
     }
@@ -38,11 +41,9 @@ function TextConfirmationScreen({route, navigation}) {
             <StatusBar/>
             <Header navigation={navigation} text={'Preview Text'} backEnabled={true} cancelEnabled={true}/>
             <View style={styles.contentContainer}>
-                <View style={styles.textContainer}>
-                    <ScrollView style={{}} showsVerticalScrollIndicator={false}>
-                        <Text style={styles.text}>{text}</Text>
-                    </ScrollView>
-                </View>
+                <ScrollView style={{}} showsVerticalScrollIndicator={false}>
+                    <Text style={styles.text}>{text}</Text>
+                </ScrollView>
             </View>
             <View style={styles.bottomContainer}>
                 <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]}
@@ -68,7 +69,13 @@ const styles = StyleSheet.create({
         // backgroundColor: '#D0D0D0',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginHorizontal: 15,
+        // width: vw(100),
+        padding: 20,
+        borderWidth: 2,
+        borderColor: colors.iconDark,
+        borderRadius: 20,
     },
     bottomContainer: {
         // flex: 1,
@@ -79,14 +86,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     textContainer: {
-        marginHorizontal: 15,
-        padding: 20,
-        borderWidth: 2,
-        borderColor: colors.iconDark,
-        borderRadius: 20,
+
     },
     text: {
-        fontSize: 18,
+        fontSize: 20,
     }
 
 })

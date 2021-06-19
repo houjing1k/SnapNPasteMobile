@@ -1,19 +1,25 @@
-import React, {createContext} from 'react'
+import React, {createContext, useState} from 'react'
 
 export const AuthContext = createContext(null);
 
 export const UserContext = createContext(null);
 
-export const UserContextProvider = ({children}) => {
-    const [username, setUsername] = React.useState('')
-    const [userToken, setUserToken] = React.useState('')
-    const [name, setName] = React.useState('')
+export const UserProvider = ({children}) => {
+    const [loginState, setLoginState] = useState({
+        isLoading: true,
+        userName: null,
+        userToken: null,
+        name: null,
+        subscription: null,
+    })
 
-    const store = {
-        usernameStore: [username, setUsername],
-        userTokenStore: [userToken, setUserToken],
-        nameStore: [name, setName],
-    }
+    return <UserContext.Provider value={[loginState, setLoginState]}>{children}</UserContext.Provider>
+}
 
-    return <UserContext.Provider value={store}>{children}</UserContext.Provider>
+export const SelectionContext = createContext(null);
+
+export const SelectionProvider = ({children}) => {
+    const [selectedText, setSelectedText] = useState([])
+
+    return <SelectionContext.Provider value={[selectedText, setSelectedText]}>{children}</SelectionContext.Provider>
 }

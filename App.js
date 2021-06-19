@@ -7,11 +7,16 @@ import RootStackNavigator from "./routes/rootStack";
 import {useContext, useEffect, useMemo, useReducer, useState} from "react";
 import colors from "./common/colors";
 import commonStyle from "./common/commonStyles";
-import {AuthContext} from "./context/context";
+import {AuthContext, SelectionProvider} from "./context/context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
+import {createStore} from "redux";
+import allReducers from "./reducers/allReducers";
+import {Provider} from "react-redux";
 
 function App() {
+
+    const store = createStore(allReducers);
 
     const initialLoginState = {
         isLoading: true,
@@ -122,7 +127,7 @@ function App() {
                 console.log(e);
             }
             dispatch({type: 'REGISTER', token: userToken});
-        }, 1000);
+        }, 0);
     }, []);
 
     if (loginState.isLoading) {
@@ -135,13 +140,15 @@ function App() {
     }
 
     return (
-
-
-        <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
-                {loginState.userToken !== null ? <HomeStackNavigator/> : <RootStackNavigator/>}
-            </NavigationContainer>
-        </AuthContext.Provider>
+        <Provider store={store}>
+            <AuthContext.Provider value={authContext}>
+                <SelectionProvider>
+                    <NavigationContainer>
+                        {loginState.userToken !== null ? <HomeStackNavigator/> : <RootStackNavigator/>}
+                    </NavigationContainer>
+                </SelectionProvider>
+            </AuthContext.Provider>
+        </Provider>
     );
 }
 

@@ -21,19 +21,19 @@ function HomeScreen({navigation}) {
             iconName: 'image',
             text: 'Images',
             isLocked: false,
-            onPressAction: () => navigation.push('Snap', {snapMode: 'Text'}),
+            onPressAction: () => navigation.push('Snap', {snapMode: 'Image'}),
         },
         {
             iconName: 'description',
             text: 'PDF',
             isLocked: false,
-            onPressAction: () => navigation.push('Snap', {snapMode: 'Text'}),
+            onPressAction: () => navigation.push('Snap', {snapMode: 'PDF'}),
         },
         {
             iconName: 'edit',
             text: 'Signature',
             isLocked: true,
-            onPressAction: () => navigation.push('Snap', {snapMode: 'Text'}),
+            onPressAction: () => navigation.push('Snap', {snapMode: 'Signature'}),
         },
     ]
 

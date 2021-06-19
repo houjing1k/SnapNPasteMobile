@@ -23,12 +23,12 @@ function HistoryScreen({navigation}) {
                 </View>
             </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={button1Action}>
-                    <Text style={styles.buttonText}>Button 1</Text>
+                <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>
+                    <Text style={styles.buttonText}>Select</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={button2Action}>
+                {/* <TouchableOpacity style={styles.button} onPress={button2Action}>
                     <Text style={styles.buttonText}>Button 2</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
         </View>

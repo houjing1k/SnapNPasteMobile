@@ -1,5 +1,16 @@
 import React from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, Alert, TextInput} from 'react-native';
+import {View, 
+        StyleSheet, 
+        Text, 
+        Button, 
+        SafeAreaView, 
+        StatusBar, 
+        TouchableOpacity, 
+        Alert, 
+        TextInput,
+        KeyboardAvoidingView,
+        flexWrap
+        } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from '../common/commonStyles';
@@ -15,47 +26,59 @@ function FeedbackScreen({navigation}) {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar/>
-            <Header navigation={navigation} text={'Feedback'} backEnabled={true}/>
-            <View style={styles.contentContainer}>
-                <View>
+        <KeyboardAvoidingView style={styles.container}>
+
+            <View style={styles.container}>
+                <StatusBar/>
+                <Header navigation={navigation} text={'Feedback'} backEnabled={true}/>
+
+                <View style={styles.contentContainer}>
+                
                     <View style={styles.inputSetContainer}>
-                        <Text style={commonStyle.commonTextStyleDark}>Title : </Text> 
+                        <View style={styles.textStyle}>
+                            <Text style={commonStyle.commonTextStyleDark}  >Title : </Text> 
+                        </View>
                         <View style={styles.inputFieldContainer}>
                             <TextInput
                                 style={[styles.input, {width: 220}]}
-                                placeholder={"Type..."}
+                                placeholder={"What's the issue?"}
                             />
                         </View>
                     </View>
-                </View>
-            </View> 
-            
-            <View style={styles.contentContainer}>
-                <View>
+                
+
+                   
                     <View style={styles.inputSetContainer}>
-                        <Text style={commonStyle.commonTextStyleDark}>Feedback : </Text> 
-                        <View style={styles.inputFieldContainerBig}>
+                        <View style={styles.textStyle}>
+                            <Text style={commonStyle.commonTextStyleDark} >Feedback : </Text> 
+                        </View>
+                        <View style={styles.inputFieldContainerBig} flexDirection= 'row'>
                             <TextInput
                                 style={[styles.input, {width: 220}]}
-                                placeholder={"Let us know what we can improve/ fix..."}
+                                placeholder={"How can we improve/fix it?"}
+                               
+                                
+                                    
                             />
                         </View>
                     </View>
+                    
+                </View> 
+                
+                {/* <View style={styles.contentContainer}>
+                </View>  */}
+
+                <View style={styles.bottomContainer}>
+                    <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>
+                        <Text style={commonStyle.commonTextStyleLight}>Submit Feedback</Text>
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={styles.button} onPress={button2Action}>
+                        <Text style={styles.buttonText}>Button 2</Text>
+                    </TouchableOpacity> */}
                 </View>
-            </View> 
 
-            <View style={styles.bottomContainer}>
-                <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>
-                    <Text style={commonStyle.commonTextStyleLight}>Submit Feedback</Text>
-                </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.button} onPress={button2Action}>
-                    <Text style={styles.buttonText}>Button 2</Text>
-                </TouchableOpacity> */}
             </View>
-
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -69,7 +92,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 3,
-        backgroundColor: '#D0D0D0',
+        backgroundColor: colors.background,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
@@ -79,7 +102,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#183fc8',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-start'
     },
 
     inputContainer: {
@@ -90,8 +113,8 @@ const styles = StyleSheet.create({
     inputSetContainer: {
         // backgroundColor: 'yellow',
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-start',
+        justifyContent: 'space-around',
     },
 
     inputFieldContainer: {
@@ -119,9 +142,10 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: colors.color3,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
         borderRadius: 8,
+        marginTop: 20,
     },
     
     input: {
@@ -131,6 +155,17 @@ const styles = StyleSheet.create({
         fontSize: 17,
         // marginRight: 5,
     },
+
+    textStyle:{
+        width: 100,
+        marginTop: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start', 
+        
+    }, 
+   
+
 })
 
 export default FeedbackScreen;

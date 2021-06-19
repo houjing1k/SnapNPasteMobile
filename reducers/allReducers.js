@@ -4,7 +4,7 @@ import {combineReducers} from "redux";
 
 const allReducers = combineReducers({
     login: loginReducer,
-    // textSelect: textSelectReducer,
+    textSelect: textSelectReducer,
 })
 
 export default allReducers;

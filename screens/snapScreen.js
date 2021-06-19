@@ -142,11 +142,11 @@ function SnapScreen({route, navigation}) {
         }
     }
 
-    const navigateNext = () => {
+    const navigateNext = async() => {
         switch (snapMode) {
             case 'Text':
                 console.log('Go to Text Select');
-                navigation.navigate('TextSelect', {image: image});
+                navigation.navigate('TextSelect', {image: await resizeImage(1200, image)});
                 break;
             case 'Image':
                 console.log('Go to Image Edit');
@@ -159,6 +159,15 @@ function SnapScreen({route, navigation}) {
             default:
                 console.log('No mode selected!');
         }
+    }
+
+    const resizeImage = async (width, image) => {
+        const resizedImage = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [{resize: {width: width}}],
+            {compress: 0.6, format: 'jpeg'},
+        );
+        return resizedImage;
     }
 
     return (

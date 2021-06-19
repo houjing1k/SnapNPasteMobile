@@ -1,12 +1,34 @@
-// const initialArray = [1,2]
-//
-// const textSelectReducer = (arr = initialArray, action) => {
-//     switch (action.type) {
-//         case 'ADD_ITEM':
-//             return arr.push(action.index)
-//         case 'REMOVE_ITEM':
-//             return arr.splice(arr.indexOf(action.index), 1)
-//     }
-// }
-//
-// export default textSelectReducer;
+const initialArray = []
+
+const textSelectReducer = (arr = initialArray, action) => {
+    let index = arr.indexOf(action.index);
+    let tempArr = [...arr];
+    switch (action.type) {
+        case 'ADD_ITEM':
+            if (!(index > -1)) {
+                // console.log('add..')
+                tempArr.push(action.index)
+                tempArr.sort((a, b) => a - b);
+                return tempArr;
+            }
+        case 'REMOVE_ITEM':
+            if (index > -1) {
+                // console.log('remove..')
+                tempArr.splice(index, 1);
+                tempArr.sort((a, b) => a - b);
+                return tempArr;
+            }
+        case 'ADD_ALL':
+            tempArr=[];
+            for(let i=0;i<action.length;i++){
+                tempArr.push(i);
+            }
+                return tempArr;
+        case 'REMOVE_ALL':
+            return [];
+        default:
+            return initialArray
+    }
+}
+
+export default textSelectReducer;

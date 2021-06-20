@@ -11,9 +11,9 @@ import {AuthContext} from "./context/context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 import {createStore} from "redux";
-import allReducers from "./reducers/allReducers";
+import allReducers from "./store/reducers/allReducers";
 import {Provider, useDispatch, useSelector} from "react-redux";
-import {login, logout, register, retrieveInfo, retrieveToken} from "./actions/accountActions";
+import {login, logout, register, retrieveInfo, retrieveToken} from "./store/actions/accountActions";
 import authenticationService from "./services/authenticationService";
 
 function App() {

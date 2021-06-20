@@ -1,3 +1,5 @@
+import {LOGIN, LOGOUT, REGISTER, RETRIEVE_INFO, RETRIEVE_TOKEN} from "../actions/types";
+
 const initialLoginState = {
     isLoading: true,
     userToken: null,
@@ -9,13 +11,13 @@ const initialLoginState = {
 
 const accountReducer = (loginState = initialLoginState, action) => {
     switch (action.type) {
-        case 'RETRIEVE_TOKEN':
+        case RETRIEVE_TOKEN:
             return {
                 ...loginState,
                 userToken: action.token,
                 isLoading: false
             };
-        case 'LOGIN':
+        case LOGIN:
             return {
                 ...loginState,
                 userName: action.id,
@@ -25,7 +27,7 @@ const accountReducer = (loginState = initialLoginState, action) => {
                 userToken: action.token,
                 isLoading: false
             };
-        case 'LOGOUT':
+        case LOGOUT:
             return {
                 ...loginState,
                 userName: null,
@@ -35,7 +37,7 @@ const accountReducer = (loginState = initialLoginState, action) => {
                 subscriptionType: null,
                 isLoading: false
             };
-        case 'REGISTER':
+        case REGISTER:
             return {
                 ...loginState,
                 userName: action.id,
@@ -45,7 +47,7 @@ const accountReducer = (loginState = initialLoginState, action) => {
                 subscriptionType: action.subscriptionType,
                 isLoading: false
             };
-        case 'RETRIEVE_INFO':
+        case RETRIEVE_INFO:
             return {
                 ...loginState,
                 userName: action.id,

@@ -19,7 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Svg, {Circle, Rect, Polygon, Image, G} from "react-native-svg";
 import BoundingBox from "../../components/ocrBoundingBox";
 import {useDispatch, useSelector} from "react-redux";
-import {addAll, removeAll} from "../../actions/textSelectActions";
+import {addAll, removeAll} from "../../store/actions/textSelectActions";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;

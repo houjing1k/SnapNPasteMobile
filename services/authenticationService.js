@@ -1,12 +1,17 @@
 import React from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {login, logout} from "../actions/accountActions";
 import {Alert} from "react-native";
+import {BYTEUS_URL} from "../common/config";
 
-const API_URL = {
-    login: 'http://byteus.me:8000/auth/jwt/login',
-
+const URL = {
+    login: BYTEUS_URL + '/auth/jwt/login',
+    register: BYTEUS_URL + '/auth/register',
+    forgot_password: BYTEUS_URL + '/auth/forgot-password',
+    reset_password: BYTEUS_URL + '/auth/reset-password',
+    request_verify_token: BYTEUS_URL + '/auth/request-verify-token',
+    verify: BYTEUS_URL + '/auth/verify',
+    me: BYTEUS_URL + '/users/me',
 }
 
 const authenticationService = {
@@ -16,7 +21,7 @@ const authenticationService = {
         formData.append('username', userName);
         formData.append('password', password);
         try {
-            let response = await axios.post(API_URL.login, formData,
+            let response = await axios.post(URL.login, formData,
                 {headers: {'Content-Type': 'multipart/form-data',}});
             // console.log(response);
             try {
@@ -52,7 +57,7 @@ const authenticationService = {
         }
     },
     signUp: async (userName, name, password) => {
-        await axios.post('http://byteus.me:8000/auth/register', {
+        await axios.post(URL.register, {
             email: data.email,
             password: data.password,
         })
@@ -91,7 +96,7 @@ const authenticationService = {
         const TOKEN = userToken;
         try {
             let response = await axios.get(
-                'http://byteus.me:8000/users/me', {
+                URL.me, {
                     headers: {
                         'Authorization': `Bearer ${TOKEN}`,
                     },

@@ -1,14 +1,20 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
 import colors from "../common/colors";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import commonStyle from "../common/commonStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import authenticationService from "../services/authenticationService";
+import {useSelector} from "react-redux";
+import {AuthContext} from "../context/context";
 
 function HomeScreen({navigation}) {
 
+    const {getProfile} = useContext(AuthContext);
+
     const isConnected = false;
+    const account = useSelector(state => state.account);
 
     const snapItemList = [
         {
@@ -37,33 +43,15 @@ function HomeScreen({navigation}) {
         },
     ]
 
-    // useEffect(() => {
-    //     (async () => {
-    //         let userToken = null;
-    //         try {
-    //             userToken = await AsyncStorage.getItem('userToken');
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //         console.log('user token retrieved: ' + userToken);
-    //         await axios.get(
-    //             'http://byteus.me:8000/users/me', {
-    //                 headers: {
-    //                     'Authorization': `Bearer ${userToken}`,
-    //                 },
-    //             })
-    //             .then((response) => {
-    //                 console.log('/////////////////////////')
-    //                 console.log('usertoken///: ' + userToken);
-    //                 console.log(response.data.email);
-    //                 let userName = response.data.email;
-    //                 console.log('---------------username and token: ' + userName + userToken);
-    //
-    //                 // console.log(loginState)
-    //             })
-    //             .catch((error) => console.log(error));
-    //     })()
-    // }, [])
+    useEffect(() => {
+        (async ()=>{
+            if (account.userToken != null && account.userName == null) {
+                console.log('fetching info...');
+                await getProfile(account.userToken);
+            }
+            // console.log(account);
+        })();
+    }, [])
 
     const Header = () => {
         const manageAccount = () => {

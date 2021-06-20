@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, Button, TouchableOpacity, Platform} from 'react-native';
+import {View, StyleSheet, Text, Button, TouchableOpacity, Platform, Dimensions} from 'react-native';
 import {vw, vh, vmin, vmax} from 'react-native-expo-viewport-units';
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -12,13 +12,28 @@ import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function SnapScreen({route, navigation}) {
+const imageFrameDimension = () => {
+    let maxWidth = Dimensions.get('window').width;
+    let maxHeight = Dimensions.get('window').height - 70 - 120;
+    let imageRatio = 4 / 3;
+    if ((maxHeight / maxWidth) < imageRatio) {
+        maxWidth = maxHeight / imageRatio;
+        // console.log('ipad')
+    }
+    else {
+        maxHeight = maxWidth * imageRatio;
+        // console.log('phone')
+    }
+    // console.log(maxWidth + " " + maxHeight)
+    return {maxWidth, maxHeight};
+}
 
+function SnapScreen({route, navigation}) {
+    console.log(imageFrameDimension().maxHeight, imageFrameDimension().maxWidth);
     const {snapMode} = route.params;
 
     //Shared Variables
     let image = null;
-
 
     //Image Picker
     useEffect(() => {
@@ -138,11 +153,11 @@ function SnapScreen({route, navigation}) {
         if (cameraRef) {
             image = await cameraRef.takePictureAsync();
             // await getOCRResults();
-            navigateNext();
+            await navigateNext();
         }
     }
 
-    const navigateNext = async() => {
+    const navigateNext = async () => {
         switch (snapMode) {
             case 'Text':
                 console.log('Go to Text Select');
@@ -216,10 +231,15 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         height: '100%',
     },
+    cameraContainer: {
+        flex: 1,
+    },
     camera: {
         // flex: 1,
-        width: vw(100),
-        height: vw(133),
+        // width: vw(100),
+        // height: vw(100),
+        width: imageFrameDimension().maxWidth,
+        height: imageFrameDimension().maxHeight,
     },
     contentContainer: {
         flex: 1,

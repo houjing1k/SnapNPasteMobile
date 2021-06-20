@@ -18,12 +18,16 @@ import * as ImageManipulator from "expo-image-manipulator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Svg, {Circle, Rect, Polygon, Image, G} from "react-native-svg";
 import BoundingBox from "../../components/ocrBoundingBox";
-import {SelectionContext} from "../../context/context";
 import {useDispatch, useSelector} from "react-redux";
 import {addAll, removeAll} from "../../actions/textSelectActions";
 
-const imageFrameWidth = Dimensions.get('window').width;
-const imageFrameHeight = imageFrameWidth / 3 * 4;
+const imageFrameDimension = () => {
+    let maxWidth = Dimensions.get('window').width;
+    let maxHeight = Dimensions.get('window').height - 70 - 170;
+    console.log(maxWidth + " " + maxHeight)
+    return {maxWidth, maxHeight};
+}
+const ocrEnabled = true;
 
 function TextSelectScreen({route, navigation}) {
     const {image} = route.params;
@@ -34,7 +38,7 @@ function TextSelectScreen({route, navigation}) {
     const [ocrResults, setOcrResults] = useState([]);
 
     const [selectAllState, setSelectAllState] = useState(true);
-    const selectedText = useSelector(state=>state.textSelect);
+    const selectedText = useSelector(state => state.textSelect);
 
     const imageWidth = image.width;
     const imageHeight = image.height;
@@ -43,11 +47,9 @@ function TextSelectScreen({route, navigation}) {
         console.log('Fetching OCR Results...')
         setIsLoading(true);
         (async () => {
-            await getOCRResults();
+            if(ocrEnabled) await getOCRResults();
             setIsLoading(false);
         })()
-        console.log('imageFrameWidth: ' + imageFrameWidth);
-        console.log('imageWidth: ' + image.width);
     }, [])
 
     const previewButtonAction = () => {
@@ -153,24 +155,29 @@ function TextSelectScreen({route, navigation}) {
                         {/*    </Image>*/}
                         {/*</View>*/}
                         <View style={styles.imageContainer}>
-                            <Svg height={imageFrameHeight} width={imageFrameWidth}
+                            <Svg height={imageFrameDimension().maxHeight} width={imageFrameDimension().maxWidth}
                                  viewBox={"0 0 " + imageWidth + " " + imageHeight}>
                                 <Image width={imageWidth} height={imageHeight} href={image.uri}/>
                                 {ocrResults.map(e => <BoundingBox bb={e.bb} index={ocrResults.indexOf(e)}
                                                                   key={ocrResults.indexOf(e)}/>)}
                             </Svg>
                         </View>
-                        <View style={styles.controlsContainer}>
-                            <TouchableOpacity style={[styles.controlButton]} onPress={selectAllAction}>
-                                <Text
-                                    style={commonStyle.commonTextStyleDark}>{selectAllState ? 'Select All' : 'Unselect All'}</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.controlsContainer}>*/}
+                        {/*    */}
+                        {/*</View>*/}
                     </View>
                     <View style={styles.bottomContainer}>
-                        <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]}
-                                          onPress={previewButtonAction}>
-                            <Text style={commonStyle.commonTextStyleLight}>Preview</Text>
+                        <TouchableOpacity style={[styles.controlButton]} onPress={selectAllAction}>
+                            <Text
+                                style={commonStyle.commonTextStyleDark}>{selectAllState ? 'Select All' : 'Unselect All'}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, {
+                            marginBottom: 20,
+                            backgroundColor: selectedText.length === 0 ? colors.grey : colors.primaryColor
+                        }]}
+                                          onPress={previewButtonAction} disabled={selectedText.length === 0}>
+                            <Text
+                                style={commonStyle.commonTextStyleLight}>{selectedText.length === 0 ? 'Please select text' : 'Preview'}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -196,25 +203,25 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     bottomContainer: {
-        height: 120,
+        height: 170,
         // backgroundColor: '#183fc8',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-end'
     },
     imageContainer: {
         backgroundColor: colors.color3,
         alignItems: 'center',
         justifyContent: 'center',
-        height: imageFrameHeight,
-        borderRadius: 10,
+        flex: 1,
+        // borderRadius: 10,
     },
     controlsContainer: {
         // backgroundColor: colors.color3,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 5,
-        flex: 1,
+        height: 80,
     },
     controlButton: {
         backgroundColor: colors.color3,
@@ -223,6 +230,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 20,
     },
 })
 

@@ -15,11 +15,14 @@ import colors from "../common/colors";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import commonStyles from "../common/commonStyles";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import commonStyle from "../common/commonStyles";
 import axios from "axios";
+import {AuthContext} from "../context/context";
 
 function SignupScreen({navigation}) {
+
+    const {signUp} = useContext(AuthContext);
 
     const [data, setData] = useState({
         email: '',

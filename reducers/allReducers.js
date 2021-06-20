@@ -1,9 +1,9 @@
-import loginReducer from "./loginReducer";
+import accountReducer from "./accountReducer";
 import textSelectReducer from "./textSelectReducer";
 import {combineReducers} from "redux";
 
 const allReducers = combineReducers({
-    login: loginReducer,
+    account: accountReducer,
     textSelect: textSelectReducer,
 })
 

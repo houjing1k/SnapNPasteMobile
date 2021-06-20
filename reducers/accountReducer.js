@@ -1,10 +1,13 @@
 const initialLoginState = {
     isLoading: true,
-    userName: null,
     userToken: null,
+    userName: null,
+    name: null,
+    profilePicture: null,
+    subscriptionType: null,
 };
 
-const loginReducer = (loginState = initialLoginState, action) => {
+const accountReducer = (loginState = initialLoginState, action) => {
     switch (action.type) {
         case 'RETRIEVE_TOKEN':
             return {
@@ -16,6 +19,9 @@ const loginReducer = (loginState = initialLoginState, action) => {
             return {
                 ...loginState,
                 userName: action.id,
+                name:action.name,
+                profilePicture: action.profilePicture,
+                subscriptionType: action.subscriptionType,
                 userToken: action.token,
                 isLoading: false
             };
@@ -24,6 +30,9 @@ const loginReducer = (loginState = initialLoginState, action) => {
                 ...loginState,
                 userName: null,
                 userToken: null,
+                name: null,
+                profilePicture: null,
+                subscriptionType: null,
                 isLoading: false
             };
         case 'REGISTER':
@@ -31,6 +40,18 @@ const loginReducer = (loginState = initialLoginState, action) => {
                 ...loginState,
                 userName: action.id,
                 userToken: action.token,
+                name:action.name,
+                profilePicture: action.profilePicture,
+                subscriptionType: action.subscriptionType,
+                isLoading: false
+            };
+        case 'RETRIEVE_INFO':
+            return {
+                ...loginState,
+                userName: action.id,
+                name:action.name,
+                profilePicture: action.profilePicture,
+                subscriptionType: action.subscriptionType,
                 isLoading: false
             };
         default:
@@ -38,4 +59,4 @@ const loginReducer = (loginState = initialLoginState, action) => {
     }
 };
 
-export default loginReducer;
+export default accountReducer;

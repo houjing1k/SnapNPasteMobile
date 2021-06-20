@@ -6,10 +6,12 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {vw} from "react-native-expo-viewport-units";
 import commonStyle from "../common/commonStyles";
 import {AuthContext} from "../context/context";
+import {useSelector} from "react-redux";
 
 function AccountScreen({navigation}) {
 
     const {signOut} = useContext(AuthContext);
+    const account = useSelector(state => state.account);
 
     const logout = () => {
         signOut();
@@ -24,8 +26,8 @@ function AccountScreen({navigation}) {
                     {/*<Text>Icon</Text>*/}
                 </View>
                 <View style={styles.detailContainer}>
-                    <Text style={styles.nameText}>Kong Hou Jing</Text>
-                    <Text style={styles.emailText}>xxxxxxxxx.gmail.com</Text>
+                    <Text style={styles.nameText}>Name</Text>
+                    <Text style={styles.emailText}>{account.userName}</Text>
                 </View>
             </View>
         )

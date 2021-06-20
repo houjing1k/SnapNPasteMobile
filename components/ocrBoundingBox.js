@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Polygon} from "react-native-svg";
-import {SelectionContext, SelectionProvider} from "../context/context";
 import {useDispatch, useSelector} from "react-redux";
 import {addItem, removeItem} from "../actions/textSelectActions";
 

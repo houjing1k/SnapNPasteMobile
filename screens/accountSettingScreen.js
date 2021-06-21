@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, Alert, flexDirection} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
@@ -8,6 +8,19 @@ import {vw} from "react-native-expo-viewport-units";
 
 function AccountSettingScreen({navigation}) {
 
+    const [username, setUsername] = useState({
+        username: '',
+    })
+
+    const handleUsernameChange = (val) => {
+        setUsername({
+            ...username,
+            username: val,
+            isValidUsername: val !== '',
+        });
+    }
+
+
     const EditAvatar = () => {
         Alert.alert(
             "Edit Avatar", 
@@ -16,6 +29,13 @@ function AccountSettingScreen({navigation}) {
             {text:"Cancel"}]
 
         );
+    }
+    
+    const EditName = () => {
+        Alert.prompt("Edit Name","Type in your name below",
+        [{text:"Confirm", onPress: () => handleUsernameChange},
+        {text: "Cancel"}]), 
+        (text) => console.log(text)
     }
 
     const ProfileDetails = () => {
@@ -27,9 +47,10 @@ function AccountSettingScreen({navigation}) {
 
                 <View style={styles.editButtonContainer}> 
                     <TouchableOpacity style={styles.buttonSmall} onPress={EditAvatar}>
-                        <Text style={styles.editAvatarText}>Edit Avatar</Text>
+                        <Text style={styles.smallText}>Edit Avatar</Text>
                     </TouchableOpacity>
                 </View>
+
 
                 <View style={styles.detailContainer}>
                     <Text style={styles.detailText}>xxxxxxxxx.gmail.com</Text>
@@ -40,6 +61,28 @@ function AccountSettingScreen({navigation}) {
                 </View>
 
             </View>
+        )
+    }
+
+
+    const UsernameDetails = () => {
+        return(
+            <View style={styles.usernameDetailsContainer}>
+                <View style={styles.usernameTitle}>
+                    <Text style={commonStyle.commonTextStyleDark}>Name : </Text>
+                </View>
+
+                <View style={styles.usernameName}>
+                    <Text style={commonStyle.commonTextStyleDark} numberOfLines={1}>{username.setUsername}</Text>
+                </View>
+                
+                <View style={styles.editButtonContainer}>
+                    <TouchableOpacity style={styles.buttonTiny} onPress={EditName}>
+                        <Text style={styles.smallText}>Edit</Text>
+                    </TouchableOpacity> 
+                </View>
+            </View>
+
         )
     }
 
@@ -57,15 +100,18 @@ function AccountSettingScreen({navigation}) {
             <View style={styles.contentContainer}>
                 <ProfileDetails/>
                 <View style={styles.divider}/>
+                <UsernameDetails/> 
+                <View style={styles.divider}/>
             </View>
-            <View style={styles.bottomContainer}>
+
+            {/* <View style={styles.bottomContainer}>
                 <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>
                     <Text style={[commonStyle.commonTextStyleLight]}>Button 1</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button2Action}>
                     <Text style={[commonStyle.commonTextStyleLight]}>Button 2</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
         </View>
     );
@@ -76,7 +122,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.background,
         flexDirection: 'column',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         height: '100%',
     },
 
@@ -85,7 +131,9 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start',
+        marginTop: 20,
+        
     },
     
     bottomContainer: {
@@ -100,16 +148,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 5,
-        marginBottom: 10,
+        marginVertical: 10,
+        
 
     },
     
     avatarContainer: {
         backgroundColor: colors.primaryColor,
-        width: vw(35),
-        height: vw(35),
-        borderRadius: vw(35 / 2),
+        width: 150,
+        height: 150,
+        borderRadius: 100,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -117,12 +165,11 @@ const styles = StyleSheet.create({
     }, 
     
     editButtonContainer:{
-        width: vw(65),
-        flexDirection: 'row',
+        width: vw(30),
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 10,
+        marginVertical: 10,
+        
     },
     
     buttonSmall: {
@@ -133,9 +180,41 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    
+    buttonTiny: {
+        backgroundColor: colors.primaryColor,
+        width: vw(10),
+        height: vw(5),
+        borderRadius: vw(5),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 
-    nameContainer:{
+    usernameDetailsContainer:{
+        width: vw(85),
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginVertical: 10,
+       // backgroundColor: 'yellow'
 
+    },
+
+    usernameTitle:{
+        width: vw(25),
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        //backgroundColor: colors.primaryColor
+    },
+
+    usernameName:{
+        width: vw(40),
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+
+        
     },
 
     detailContainer:{
@@ -148,17 +227,15 @@ const styles = StyleSheet.create({
     },
 
     detailText:{
-        fontSize: 15,
+        fontSize: 18,
     },
 
-    editAvatarText:{
+
+    smallText:{
         fontSize: 13,
     },
 
-    accountTypeContainer:{
-
-    },
-
+ 
     divider: {
         width: vw(85),
         marginVertical: 10,

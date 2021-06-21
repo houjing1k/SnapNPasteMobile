@@ -5,20 +5,13 @@ import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {vw} from "react-native-expo-viewport-units";
+import { set } from 'react-native-reanimated';
 
 function AccountSettingScreen({navigation}) {
 
-    const [username, setUsername] = useState({
-        username: '',
-    })
+    const [username, setUsername] = useState("")
 
-    const handleUsernameChange = (val) => {
-        setUsername({
-            ...username,
-            username: val,
-            isValidUsername: val !== '',
-        });
-    }
+
 
 
     const EditAvatar = () => {
@@ -33,9 +26,9 @@ function AccountSettingScreen({navigation}) {
     
     const EditName = () => {
         Alert.prompt("Edit Name","Type in your name below",
-        [{text:"Confirm", onPress: () => handleUsernameChange},
-        {text: "Cancel"}]), 
-        (text) => console.log(text)
+        [{text:"Confirm", onPress: (text)=> {setUsername(text)}},
+        {text: "Cancel"}])
+        
     }
 
     const ProfileDetails = () => {
@@ -73,7 +66,7 @@ function AccountSettingScreen({navigation}) {
                 </View>
 
                 <View style={styles.usernameName}>
-                    <Text style={commonStyle.commonTextStyleDark} numberOfLines={1}>{username.setUsername}</Text>
+                    <Text style={commonStyle.commonTextStyleDark} numberOfLines={1}>{username.username}</Text>
                 </View>
                 
                 <View style={styles.editButtonContainer}>

@@ -26,7 +26,7 @@ function FeedbackScreen({navigation}) {
 
     const Submit = async () => {
         if (data.isValidTitle && data.isValidFeedback) {
-            await axios.post('http://byteus.me:8000/feedback', {
+            await axios.post('http://byteus.me:8000/All_feedback', {
                 title: data.Title,
                 feedback: data.Feedback,
             })

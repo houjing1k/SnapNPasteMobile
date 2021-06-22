@@ -11,7 +11,13 @@ function AccountSettingScreen({navigation}) {
 
     const [username, setUsername] = useState("")
 
-
+    const handleUsernameChange =(text) => {
+        setUsername({
+            ...username,
+            username: text,
+            isValidEmail: text !== '',
+        });
+    }
 
 
     const EditAvatar = () => {
@@ -26,7 +32,7 @@ function AccountSettingScreen({navigation}) {
     
     const EditName = () => {
         Alert.prompt("Edit Name","Type in your name below",
-        [{text:"Confirm", onPress: (text)=> {setUsername(text)}},
+        [{text:"Confirm", onPress: (text)=> {handleUsernameChange(text)}},
         {text: "Cancel"}])
         
     }
@@ -66,7 +72,7 @@ function AccountSettingScreen({navigation}) {
                 </View>
 
                 <View style={styles.usernameName}>
-                    <Text style={commonStyle.commonTextStyleDark} numberOfLines={1}>{username.username}</Text>
+                    <Text style={commonStyle.commonTextStyleDark} numberOfLines={1}>{username}</Text>
                 </View>
                 
                 <View style={styles.editButtonContainer}>

@@ -3,6 +3,7 @@ import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacit
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
+import { vw } from 'react-native-expo-viewport-units';
 
 function ConnectionsScreen({navigation}) {
 
@@ -13,22 +14,38 @@ function ConnectionsScreen({navigation}) {
         // navigation.navigate('Signup');
     }
 
+
+
     return (
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'My Connections'} backEnabled={true}/>
             <View style={styles.contentContainer}>
-                <View>
-                    <Text>My Connections</Text>
+
+                <View style={styles.titleContainer}>
+                    <Text style={commonStyle.commonTextStyleDark}>Pasting To: </Text>
                 </View>
-            </View>
+
+                <TouchableOpacity style={styles.connectionContainer}>
+                    <Text>Kenny's laptop</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.connectionContainer}>
+                    <Text>Han Ming's laptop</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.connectionContainer}>
+                    <Text>Hou Jing's laptop</Text>
+                </TouchableOpacity>
+
+            {/* </View>
             <View style={styles.bottomContainer}>
                 <TouchableOpacity style={styles.button} onPress={button1Action}>
                     <Text style={styles.buttonText}>Button 1</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={button2Action}>
                     <Text style={styles.buttonText}>Button 2</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
         </View>
@@ -48,7 +65,8 @@ const styles = StyleSheet.create({
         // backgroundColor: '#D0D0D0',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start',
+        marginTop: 40,
     },
     bottomContainer: {
         flex: 1,
@@ -56,6 +74,28 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-end'
+    },
+
+    titleContainer:{
+        width: vw(65),
+        flexDirection: 'row',
+        justifyContent: 'center', 
+        marginBottom: 30,
+    },
+
+    connectionContainer: {
+        // backgroundColor: 'green',
+        width: 250,
+        height: 60,
+        paddingLeft: 15,
+        paddingRight: 10,
+        marginVertical: 20,
+        borderWidth: 2,
+        borderColor: colors.color3,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderRadius: 8,
     },
 })
 

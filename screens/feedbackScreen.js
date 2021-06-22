@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         height: 250,
         paddingLeft: 15,
         paddingRight: 10,
-        marginVertical: 5,
+        marginVertical: 10,
         borderWidth: 2,
         borderColor: colors.color3,
         flexDirection: 'row',

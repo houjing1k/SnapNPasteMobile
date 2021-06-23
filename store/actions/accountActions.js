@@ -6,29 +6,31 @@ export const retrieveToken = (userToken) => {
         token: userToken
     }
 }
-export const login = (userName, userToken) => {
+export const login = (email, userToken) => {
     return {
         type: LOGIN,
-        id: userName,
+        email: email,
         token: userToken
     }
 }
 export const logout = () => {
     return {
-        type: LOGOUT
+        type: LOGOUT,
     }
 }
-export const register = (userName, userToken) => {
+export const register = (email, userToken) => {
     return {
         type: REGISTER,
-        id: userName,
+        email: email,
         token: userToken
     }
 }
-export const retrieveInfo = (userName) => {
+export const retrieveInfo = (email, username, profilePicture, subscriptionType) => {
     return {
         type: RETRIEVE_INFO,
-        id: userName,
-
+        email: email,
+        username: username,
+        profilePicture: profilePicture,
+        subscriptionType: subscriptionType,
     }
 }

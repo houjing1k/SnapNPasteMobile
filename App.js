@@ -8,13 +8,13 @@ import {useContext, useEffect, useMemo, useReducer, useState} from "react";
 import colors from "./common/colors";
 import commonStyle from "./common/commonStyles";
 import {AuthContext} from "./context/context";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from "axios";
+import * as SecureStore from 'expo-secure-store';
 import {createStore} from "redux";
 import allReducers from "./store/reducers/allReducers";
 import {Provider, useDispatch, useSelector} from "react-redux";
 import {login, logout, register, retrieveInfo, retrieveToken} from "./store/actions/accountActions";
 import authenticationService from "./services/authenticationService";
+import defaultAvatar from './assets/avatar.png';
 
 function App() {
     const store = createStore(allReducers);
@@ -26,61 +26,21 @@ function App() {
 }
 
 function Root() {
-    // const initialLoginState = {
-    //     isLoading: true,
-    //     userName: null,
-    //     userToken: null,
-    // };
-
-    // const loginReducer = (prevState, action) => {
-    //     switch (action.type) {
-    //         case 'RETRIEVE_TOKEN':
-    //             return {
-    //                 ...prevState,
-    //                 userToken: action.token,
-    //                 isLoading: false
-    //             };
-    //         case 'LOGIN':
-    //             return {
-    //                 ...prevState,
-    //                 userName: action.id,
-    //                 userToken: action.token,
-    //                 isLoading: false
-    //             };
-    //         case 'LOGOUT':
-    //             return {
-    //                 ...prevState,
-    //                 userName: null,
-    //                 userToken: null,
-    //                 isLoading: false
-    //             };
-    //         case 'REGISTER':
-    //             return {
-    //                 ...prevState,
-    //                 userName: action.id,
-    //                 userToken: action.token,
-    //                 isLoading: false
-    //             };
-    //     }
-    // };
-
-    // const [loginState, dispatch] = useReducer(loginReducer, initialLoginState);
-
     const dispatch = useDispatch();
     const account = useSelector(state => state.account);
 
     const authContext = useMemo(() => ({
-        signIn: async (userName, password) => {
+        signIn: async (email, password) => {
             let userToken = null;
-            const response = await authenticationService.signIn(userName, password);
+            const response = await authenticationService.signIn(email, password);
             console.log(response)
             switch (response.type) {
                 case 'SUCCESS':
                     userToken = response.data;
-                    AsyncStorage.setItem('userToken', userToken);
-                    dispatch(login(userName, userToken));
+                    await SecureStore.setItemAsync('userToken', userToken);
+                    dispatch(login(email, userToken));
                     console.log('--- Login Success ---');
-                    console.log('userName:' + userName);
+                    console.log('email:' + email);
                     console.log('userToken:' + userToken);
                     break;
                 case 'INVALID_CREDENTIAL':
@@ -92,7 +52,8 @@ function Root() {
         },
         signOut: async () => {
             try {
-                await AsyncStorage.removeItem('userToken');
+                await SecureStore.deleteItemAsync('userToken');
+                console.log('Removed token from storage');
             } catch (e) {
                 console.log(e);
             }
@@ -106,8 +67,8 @@ function Root() {
             if (info != null) {
                 console.log("Profile found:");
                 console.log(info);
-                dispatch(retrieveInfo(info.email));
-            }else{
+                dispatch(retrieveInfo(info.email,info.username, defaultAvatar, 'FREE'));
+            } else {
                 console.log("Error retrieving profile");
             }
         }
@@ -117,7 +78,8 @@ function Root() {
         setTimeout(async () => {
             let userToken = null;
             try {
-                userToken = await AsyncStorage.getItem('userToken');
+                // userToken = await AsyncStorage.getItem('userToken');
+                userToken = await SecureStore.getItemAsync('userToken');
                 console.log('fetched userToken: ' + userToken)
             } catch (e) {
                 console.log(e);

@@ -2,14 +2,14 @@
   "expo": {
     "name": "SnapNPasteMobile",
     "slug": "SnapNPasteMobile",
-    "owner": "houjing1k",
+    "owner": "byteus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/snp-logo.jpeg",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/snp-logo.jpeg",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F7F7F7"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

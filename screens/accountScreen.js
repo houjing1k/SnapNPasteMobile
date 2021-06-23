@@ -1,5 +1,15 @@
 import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    SafeAreaView,
+    StatusBar,
+    TouchableOpacity,
+    ScrollView,
+    Image
+} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
@@ -15,19 +25,21 @@ function AccountScreen({navigation}) {
 
     const logout = () => {
         signOut();
-        // navigation.navigate('Login');
     }
+    useEffect(() => {
+        console.log(account);
+    }, [])
 
     const ProfileDetails = () => {
         return (
             <View style={styles.profileDetailsContainer}>
-                <View style={styles.avatarContainer}>
-                    <MaterialIcon name={'account-circle'} size={vw(25)}/>
+                <Image style={styles.avatarContainer} source={account.profilePicture}>
+                    {/*<MaterialIcon name={'account-circle'} size={vw(25)}/>*/}
                     {/*<Text>Icon</Text>*/}
-                </View>
+                </Image>
                 <View style={styles.detailContainer}>
-                    <Text style={styles.nameText}>Name</Text>
-                    <Text style={styles.emailText}>{account.userName}</Text>
+                    <Text style={styles.nameText}>{account.username}</Text>
+                    <Text style={styles.emailText}>{account.email}</Text>
                 </View>
             </View>
         )
@@ -57,7 +69,7 @@ function AccountScreen({navigation}) {
                 <AccountItem text={'Account Settings'} iconName={'settings'}
                              onClickAction={() => navigation.push('AccountSetting')}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Upgrade to Premium (Coming Soon)'} iconName={'stars'}/>
+                <AccountItem text={'Upgrade to Premium \n(Coming Soon)'} iconName={'stars'}/>
                 <View style={styles.divider}/>
                 <AccountItem text={'Feedback'} iconName={'chat'} onClickAction={() => navigation.push('Feedback')}/>
                 <View style={styles.divider}/>
@@ -109,6 +121,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primaryColor,
         width: vw(25),
         height: vw(25),
+        maxWidth: 120,
+        maxHeight: 120,
         borderRadius: vw(25 / 2),
         justifyContent: 'center',
         alignItems: 'center',

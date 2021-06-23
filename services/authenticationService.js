@@ -1,8 +1,7 @@
 import React from "react";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Alert} from "react-native";
 import {BYTEUS_URL} from "../common/config";
+import {useSelector} from "react-redux";
 
 const URL = {
     login: BYTEUS_URL + '/auth/jwt/login',
@@ -12,13 +11,14 @@ const URL = {
     request_verify_token: BYTEUS_URL + '/auth/request-verify-token',
     verify: BYTEUS_URL + '/auth/verify',
     me: BYTEUS_URL + '/users/me',
+    refresh_token: BYTEUS_URL + 'auth/jwt/refresh',
 }
 
 const authenticationService = {
-    signIn: async (userName, password) => {
+    signIn: async (email, password) => {
         let userToken = null;
         const formData = new FormData();
-        formData.append('username', userName);
+        formData.append('username', email);
         formData.append('password', password);
         try {
             let response = await axios.post(URL.login, formData,
@@ -42,73 +42,77 @@ const authenticationService = {
                 }
             }
         } catch (e) {
-            // console.log(e);
+            console.log(e);
             return {
                 type: 'INVALID_CREDENTIAL',
                 data: null
             }
         }
     },
-    signOut: async () => {
+    signUp: async (email, username, password) => {
         try {
-            await AsyncStorage.removeItem('userToken');
+            const response = await axios.post(URL.register, {
+                email: data.email,
+                password: data.password,
+                username: data.name,
+            })
+            return 'SUCCESS'
         } catch (e) {
             console.log(e);
+            return 'FAILED'
         }
-    },
-    signUp: async (userName, name, password) => {
-        await axios.post(URL.register, {
-            email: data.email,
-            password: data.password,
-        })
-            .then((response) => {
-                console.log(response);
-                Alert.alert(
-                    "Registration Successful",
-                    "Your account has been created.",
-                    [
-                        {
-                            text: "OK", onPress: () => {
-                                navigation.pop();
-                            }
-                        }]
-                );
-            })
-            .catch((error) => {
-                console.log(error);
-                Alert.alert(
-                    "Registration Unsuccessful",
-                    "Account already exists",
-                    [{
-                        text: "OK", onPress: () => {
-                        }
-                    }]
-                );
-            });
-    },
-    setCookie: async () => {
 
     },
-    removeCookie: async () => {
-
+    refreshToken: async (refreshToken) => {
+        try {
+            const response = await axios.get(
+                URL.refresh_token, {
+                    headers: {
+                        'Authorization': `Bearer ${refreshToken}`,
+                    },
+                });
+            return response.data;
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
     },
     getProfile: async (userToken) => {
         const TOKEN = userToken;
         try {
-            let response = await axios.get(
+            const response = await axios.get(
                 URL.me, {
                     headers: {
                         'Authorization': `Bearer ${TOKEN}`,
                     },
                 });
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.log(error)
             return null;
         }
     },
-    updateProfile: async () => {
-
+    updateName: async (newName, userToken) => {
+        axios.patch(
+            'http://localhost:8000/users/me',
+            {
+                username: newName,
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`,
+                },
+            },
+        )
+            .then((response) => {
+                console.log(response);
+                console.log('Update successful')
+            })
+            .catch((error) => {
+                console.log(error)
+                console.log('Update Failed')
+            });
     },
 }
 

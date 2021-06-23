@@ -3,8 +3,8 @@ import {LOGIN, LOGOUT, REGISTER, RETRIEVE_INFO, RETRIEVE_TOKEN} from "../actions
 const initialLoginState = {
     isLoading: true,
     userToken: null,
-    userName: null,
-    name: null,
+    email: null,
+    username: null,
     profilePicture: null,
     subscriptionType: null,
 };
@@ -20,8 +20,8 @@ const accountReducer = (loginState = initialLoginState, action) => {
         case LOGIN:
             return {
                 ...loginState,
-                userName: action.id,
-                name:action.name,
+                email: action.email,
+                username:action.username,
                 profilePicture: action.profilePicture,
                 subscriptionType: action.subscriptionType,
                 userToken: action.token,
@@ -30,9 +30,9 @@ const accountReducer = (loginState = initialLoginState, action) => {
         case LOGOUT:
             return {
                 ...loginState,
-                userName: null,
+                email: null,
                 userToken: null,
-                name: null,
+                username: null,
                 profilePicture: null,
                 subscriptionType: null,
                 isLoading: false
@@ -40,18 +40,21 @@ const accountReducer = (loginState = initialLoginState, action) => {
         case REGISTER:
             return {
                 ...loginState,
-                userName: action.id,
+                email: action.email,
                 userToken: action.token,
-                name:action.name,
+                username:action.username,
                 profilePicture: action.profilePicture,
                 subscriptionType: action.subscriptionType,
                 isLoading: false
             };
         case RETRIEVE_INFO:
+            console.log('reducing...')
+            console.log(action.email)
+            console.log(action.username)
             return {
                 ...loginState,
-                userName: action.id,
-                name:action.name,
+                email: action.email,
+                username:action.username,
                 profilePicture: action.profilePicture,
                 subscriptionType: action.subscriptionType,
                 isLoading: false

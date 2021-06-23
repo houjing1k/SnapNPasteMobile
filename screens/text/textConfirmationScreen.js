@@ -14,15 +14,19 @@ import Header from "../../components/header";
 import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
+import {useSelector} from "react-redux";
+import {sendText} from "../../store/actions/chatActions";
 
 function TextConfirmationScreen({route, navigation}) {
 
     const {text} = route.params;
+    const chat = useSelector(state => state.chat);
 
     const pasteButtonAction = () => {
+        sendText(text, chat);
         Alert.alert(
             "Paste to PC",
-            "Successfully Pasted to PC (Fake)",
+            "Successfully Pasted to PC",
             [
                 {
                     text: "OK", onPress: () => {
@@ -85,9 +89,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    textContainer: {
-
-    },
+    textContainer: {},
     text: {
         fontSize: 20,
     }

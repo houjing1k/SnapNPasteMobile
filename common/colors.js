@@ -1,7 +1,7 @@
 const colors = {
     //background: '#F2F2F2',
     //background: 'white',
-    background: '#FFFFFF',
+    background: '#F7F7F7',
     // primaryColor: '#C1E1DC',
     // secondaryColor: '#FFCCAC'
     //primaryColor: '#97c1a9',

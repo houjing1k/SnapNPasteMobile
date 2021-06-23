@@ -36,10 +36,11 @@ function SignupScreen({navigation}) {
     })
 
     const register = async () => {
-        if (data.isValidEmail && data.isValidPassword && data.isPasswordMatch) {
+        if (data.isValidEmail && data.isValidPassword && data.isPasswordMatch&&data.isValidName) {
             await axios.post('http://byteus.me:8000/auth/register', {
                 email: data.email,
                 password: data.password,
+                username: data.name
             })
                 .then((response) => {
                     console.log(response);
@@ -177,11 +178,12 @@ const styles = StyleSheet.create({
         // justifyContent: 'center'
     },
     bottomContainer: {
-        height: 80,
+        height: 100,
         // backgroundColor: '#183fc8',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-end',
+        paddingBottom: 20,
     },
     button: {
         backgroundColor: colors.primaryColor,

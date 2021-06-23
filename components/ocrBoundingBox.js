@@ -5,8 +5,16 @@ import {addItem, removeItem} from "../store/actions/textSelectActions";
 
 function BoundingBox(props) {
     // console.log(props.bb)
-    const bb = props.bb;
+    let bb = props.bb;
     const index = props.index;
+    const imageWidth = props.imageWidth;
+    const imageHeight = props.imageHeight;
+    for (let i = 0; i < 8; i += 2) {
+        if (bb[i] < 0) bb[i] = 0;
+        if (bb[i] > imageWidth) bb[i] = imageWidth;
+        if (bb[i + 1] < 0) bb[i + 1] = 0;
+        if (bb[i + 1] > imageHeight) bb[i + 1] = imageHeight;
+    }
     const points =
         bb[0] + ',' + bb[1] + ' ' +
         bb[2] + ',' + bb[3] + ' ' +
@@ -45,7 +53,7 @@ function BoundingBox(props) {
         // let selection = [...list];
         // let test = selection.indexOf(index) === -1;
         // console.log(test);
-        let isInArray = list.indexOf(props.index)!==-1;
+        let isInArray = list.indexOf(props.index) !== -1;
         // let isInArray = false;
         // console.log('array:');
         // console.log(list);

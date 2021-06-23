@@ -29,7 +29,7 @@ const imageFrameDimension = () => {
 }
 
 function SnapScreen({route, navigation}) {
-    console.log(imageFrameDimension().maxHeight, imageFrameDimension().maxWidth);
+    // console.log(imageFrameDimension().maxHeight, imageFrameDimension().maxWidth);
     const {snapMode} = route.params;
 
     //Shared Variables

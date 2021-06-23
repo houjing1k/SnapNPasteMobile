@@ -8,7 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
     TextInput,
-    KeyboardAvoidingView, ScrollView, KeyboardAvoidingViewComponent, Keyboard
+    KeyboardAvoidingView, ScrollView, KeyboardAvoidingViewComponent, Keyboard, Image
 } from 'react-native';
 import colors from "../common/colors";
 
@@ -17,6 +17,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import commonStyle from "../common/commonStyles";
 import {vw, vh} from "react-native-expo-viewport-units";
 import {AuthContext} from "../context/context";
+import logo from '../assets/snp-logo.jpeg'
 
 function LoginScreen({navigation}) {
 
@@ -88,12 +89,13 @@ function LoginScreen({navigation}) {
             <StatusBar/>
 
             <View style={styles.contentContainer}>
-                <View style={styles.logoContainer}>
-                    <Icon name="camera-retro" size={120} color={'#000000'}/>
-                    {
-                        keyboardStatus ? <View/> : <Text style={styles.title}>Snap-N-Paste</Text>
-                    }
-                </View>
+
+                <Image style={styles.logoContainer} source={logo}>
+                    {/*<Icon name="camera-retro" size={120} color={'#000000'}/>*/}
+                    {/*{*/}
+                    {/*    keyboardStatus ? <View/> : <Text style={styles.title}>Snap-N-Paste</Text>*/}
+                    {/*}*/}
+                </Image>
                 <View style={styles.inputContainer}>
                     <View style={styles.inputSetContainer}>
                         <Icon name="envelope" size={30} style={styles.inputIcon} color={colors.grey}/>
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         // backgroundColor: '#183fc8',
         height: 160,
+        paddingBottom: 5,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-end'
@@ -173,8 +176,13 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     logoContainer: {
-        // backgroundColor: 'yellow',
+        // backgroundColor: '#E35350',
+        maxHeight: 300,
+        maxWidth: 250,
+        flex:1,
         alignItems: 'center',
+        justifyContent: 'center',
+        resizeMode: 'contain',
     },
     title: {
         fontSize: 30,
@@ -183,7 +191,7 @@ const styles = StyleSheet.create({
     buttonText: {},
     inputContainer: {
         // backgroundColor: 'yellow',
-        marginTop: 20,
+        // marginTop: 20,
     },
     inputSetContainer: {
         // backgroundColor: 'yellow',

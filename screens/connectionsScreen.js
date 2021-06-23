@@ -1,33 +1,51 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
+import {useDispatch, useSelector} from "react-redux";
+import {selectDevice, sendText} from "../store/actions/chatActions";
 
 function ConnectionsScreen({navigation}) {
 
-    const button1Action = () => {
-        // navigation.navigate('Home')
-    }
+    const dispatch = useDispatch();
+    const chat = useSelector(state => state.chat);
+    // console.log(chat.deviceList);
+
     const button2Action = () => {
-        // navigation.navigate('Signup');
+        sendText('Hello', chat);
     }
+    const selectDeviceAction = (deviceName) => {
+        selectDevice(dispatch, deviceName);
+    }
+    // selectDeviceAction('laptop');
 
     return (
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'My Connections'} backEnabled={true}/>
             <View style={styles.contentContainer}>
-                <View>
-                    <Text>My Connections</Text>
-                </View>
+                <Text>{'Selected Device:'}</Text>
+                <Text>{chat.selectedDevice}</Text>
+                <Text>{'\n\nOnline devices:'}</Text>
+                {
+                    chat.deviceList.map((device) => {
+                        return (
+                            <TouchableOpacity key={chat.deviceList.indexOf(device)} onPress={() => {
+                                console.log('pressed ' + device);
+                                selectDeviceAction(device);
+                            }}>
+                                <Text>{device}</Text>
+                            </TouchableOpacity>
+                        )
+                    })
+                }
+                <Text>{'\n\nDevice Name (UUID):'}</Text>
+                <Text>{chat.activeDevice}</Text>
             </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={button1Action}>
-                    <Text style={styles.buttonText}>Button 1</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={button2Action}>
-                    <Text style={styles.buttonText}>Button 2</Text>
+                <TouchableOpacity style={commonStyle.buttonDual} onPress={button2Action}>
+                    <Text style={styles.buttonText}>Send Text</Text>
                 </TouchableOpacity>
             </View>
 

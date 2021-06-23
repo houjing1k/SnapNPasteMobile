@@ -1,20 +1,40 @@
 import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    SafeAreaView,
+    StatusBar,
+    TouchableOpacity,
+    ScrollView,
+    Image
+} from 'react-native';
 import colors from "../common/colors";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import commonStyle from "../common/commonStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import authenticationService from "../services/authenticationService";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AuthContext} from "../context/context";
+import {initialiseChat} from "../store/actions/chatActions";
+import * as SecureStore from "expo-secure-store";
+import {retrieveToken} from "../store/actions/accountActions";
 
 function HomeScreen({navigation}) {
 
     const {getProfile} = useContext(AuthContext);
 
-    const isConnected = false;
+    const dispatch = useDispatch();
     const account = useSelector(state => state.account);
+    const chat = useSelector(state => state.chat);
+    // let isConnected = chat.isSelectedDeviceOnline;
+
+    const printAcc = () => {
+        // console.log(account);
+        console.log(chat);
+    }
 
     const snapItemList = [
         {
@@ -41,40 +61,82 @@ function HomeScreen({navigation}) {
             isLocked: true,
             onPressAction: () => navigation.push('Snap', {snapMode: 'Signature'}),
         },
+        // {
+        //     iconName: 'edit',
+        //     text: 'PRINT ACC',
+        //     isLocked: false,
+        //     onPressAction: printAcc,
+        // },
     ]
 
     useEffect(() => {
-        (async ()=>{
-            if (account.userToken != null && account.userName == null) {
+        (async () => {
+            if (account.userToken != null && account.username == null) {
                 console.log('fetching info...');
                 await getProfile(account.userToken);
+                // console.log('aaa')
+                // printAcc();
             }
-            // console.log(account);
         })();
     }, [])
+
+    useEffect(() => {
+        // console.log('aaaa');
+        // console.log(account);
+        setTimeout(async () => {
+            if (!chat.isInitialised && account.email !== null) {
+                console.log('Initialising Chat...');
+                console.log(account)
+                await initialiseChat(dispatch, account);
+            } else if (chat.isInitialised) {
+                console.log('Chat already initialised');
+            }
+        }, 0);
+        // (async ()=>{
+        //     if (true) {
+        //         console.log('ccccc');
+        //         console.log(account)
+        //         await initialiseChat(dispatch, account);
+        //     } else {
+        //         console.log('Chat already initialised');
+        //     }
+        //
+        // })();
+        // (async () => {
+        //     console.log(chat);
+        //     if (true) {
+        //         console.log('Initialising Chat...');
+        //         console.log(account)
+        //         await initialiseChat(dispatch, account);
+        //     } else {
+        //         console.log('Chat already initialised');
+        //     }
+        // })();
+    }, [account])
+
 
     const Header = () => {
         const manageAccount = () => {
             navigation.push('Account');
-            console.log("Pressed Profile");
+            // console.log("Pressed Profile");
         }
         const ConnectionStatus = () => {
-            if (isConnected) {
+            if (chat.isSelectedDeviceOnline) {
                 return (
                     <View style={headerStyles.connectionIconContainer}>
-                        <TouchableOpacity
+                        <View
                             style={[headerStyles.connectionIconButton, {backgroundColor: '#A2EF95'}, commonStyle.dropShadow]}>
                             <MaterialIcon name={'link'} size={45}/>
-                        </TouchableOpacity>
+                        </View>
                     </View>
                 );
             } else return (
                 <View style={headerStyles.connectionIconContainer}>
-                    <TouchableOpacity
+                    <View
                         style={[headerStyles.connectionIconButton, {backgroundColor: '#EF9595'}, commonStyle.dropShadow]}
                         disabled={true}>
                         <MaterialIcon name={'link-off'} size={40}/>
-                    </TouchableOpacity>
+                    </View>
                 </View>
             );
         }
@@ -84,7 +146,8 @@ function HomeScreen({navigation}) {
                 <View style={headerStyles.manageAccountButtonContainer}>
                     <TouchableOpacity style={[headerStyles.manageAccountButton, commonStyle.dropShadow]}
                                       onPress={manageAccount}>
-                        <MaterialIcon name={'account-circle'} size={40}/>
+                        <Image source={account.profilePicture} style={headerStyles.profilePicture}/>
+                        {/*<MaterialIcon name={'account-circle'} size={40}/>*/}
                     </TouchableOpacity>
                 </View>
                 <View style={headerStyles.centerContainer}>
@@ -131,7 +194,7 @@ function HomeScreen({navigation}) {
         for (let i = 0; i < listRowSize; i += 2) {
             // console.log('item: ' + i);
             let firstItem = itemList[i];
-            let secondItem = isEven ? itemList[i + 1] : itemList[i];
+            let secondItem = (i < listRowSize) ? itemList[i + 1] : itemList[i];
             list.push(
                 <View key={i} style={{flexDirection: 'row'}}>
                     <SnapItem text={firstItem.text} iconName={firstItem.iconName} isLocked={firstItem.isLocked}
@@ -178,7 +241,8 @@ function HomeScreen({navigation}) {
                                   onPress={() => navigation.push('Connections')}>
                     <Text style={styles.connectionStatusStaticText}>Pasting to: </Text>
                     <View style={styles.connectionStatusDivider}/>
-                    <Text style={styles.connectionStatusDynamicText}>Kenny's Laptop</Text>
+                    <Text
+                        style={styles.connectionStatusDynamicText}>{chat.selectedDevice == null ? 'No Device Selected' : chat.selectedDevice}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -282,12 +346,18 @@ const headerStyles = StyleSheet.create({
     manageAccountButton: {
         width: 60,
         height: 60,
-        backgroundColor: colors.primaryColor,
+        // backgroundColor: colors.primaryColor,
+        // backgroundImage: account.profilePicture,
         borderRadius: 30,
         margin: 10,
         marginLeft: 25,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    profilePicture:{
+        width:60,
+        height:60,
+        borderRadius: 30,
     },
     connectionIconButton: {
         width: 60,

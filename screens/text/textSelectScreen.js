@@ -28,7 +28,7 @@ const imageFrameDimension = () => {
     // console.log(maxWidth + " " + maxHeight)
     return {maxWidth, maxHeight};
 }
-const ocrEnabled = true;
+const ocrEnabled = false;
 
 function TextSelectScreen({route, navigation}) {
     const {image} = route.params;
@@ -137,7 +137,7 @@ function TextSelectScreen({route, navigation}) {
                             marginBottom: 20,
                             backgroundColor: selectedText.length === 0 ? colors.grey : colors.primaryColor
                         }]}
-                                          onPress={previewButtonAction} disabled={selectedText.length === 0}>
+                                          onPress={previewButtonAction} disabled={ocrEnabled && selectedText.length === 0}>
                             <Text
                                 style={commonStyle.commonTextStyleLight}>{selectedText.length === 0 ? 'Please select text' : 'Preview'}</Text>
                         </TouchableOpacity>

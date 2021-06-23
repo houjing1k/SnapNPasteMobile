@@ -1,31 +1,78 @@
 import React from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    SafeAreaView,
+    StatusBar,
+    TouchableOpacity,
+    ScrollView,
+    Alert, Image, Dimensions, TextInput
+} from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
+import {vw} from "react-native-expo-viewport-units";
+import {useSelector} from "react-redux";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
-function ImageConfirmationScreen({navigation}) {
+const imageFrameDimension = () => {
+    let maxWidth = Dimensions.get('window').width;
+    let maxHeight = Dimensions.get('window').height - 70 - 275;
+    // console.log(maxWidth + " " + maxHeight)
+    return {maxWidth, maxHeight};
+}
+
+function ImageConfirmationScreen({route, navigation}) {
+
+    const {image} = route.params;
+    const chat = useSelector(state => state.chat);
 
     const pasteButtonAction = () => {
-        navigation.navigate('Home')
+
     }
-    const button2Action = () => {
-        // navigation.navigate('Signup');
+    const saveButtonAction = () => {
+
+    }
+
+    const selectDevice = () => {
+        navigation.push('Connections');
     }
 
     return (
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Preview Image'} backEnabled={true} cancelEnabled={true}/>
+            <View style={styles.selectDeviceContainer}>
+                <TouchableOpacity style={styles.selectDeviceButton} onPress={selectDevice}>
+                    <MaterialIcon name={'computer'} size={30}/>
+                    <Text style={[commonStyle.commonTextStyleDark, {
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        marginLeft: 15
+                    }]}>{chat.selectedDevice}</Text>
+                </TouchableOpacity>
+            </View>
             <View style={styles.contentContainer}>
-                <View>
-                    <Text>Image Confirmation Screen</Text>
+                <Image source={image} style={styles.image} resizeMethod={"auto"} resizeMode={'contain'}/>
+            </View>
+            <View style={styles.filenameInputContainer}>
+                <View style={styles.filenameInputSet}>
+                    <MaterialIcon name={'attach-file'} size={30}/>
+                    <TextInput style={styles.filenameInput} placeholder={'File Name'}/>
                 </View>
             </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]}
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
+                                  onPress={saveButtonAction}>
+                    <MaterialIcon name={'save'} size={30} color={colors.iconLight}/>
+                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Save to PC</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
                                   onPress={pasteButtonAction}>
-                    <Text style={[commonStyle.commonTextStyleLight]}>Paste to PC</Text>
+                    <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
+                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Paste to PC</Text>
                 </TouchableOpacity>
             </View>
 
@@ -42,19 +89,81 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     contentContainer: {
-        flex: 3,
-        backgroundColor: '#D0D0D0',
+        flex: 1,
+        backgroundColor: colors.color3,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginHorizontal: 15,
+        width: imageFrameDimension().maxWidth - 30,
+        borderWidth: 2,
+        borderColor: colors.iconDark,
+        borderRadius: 20,
+        overflow: 'hidden',
     },
     bottomContainer: {
-        flex: 1,
+        // flex: 1,
         // backgroundColor: '#183fc8',
+        height: 150,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        marginBottom: 10,
     },
+    buttonStyle: {
+        marginBottom: 10,
+        flexDirection: 'row',
+    },
+    textContainer: {},
+    image: {
+        width: imageFrameDimension().maxWidth - 30,
+        height: imageFrameDimension().maxHeight,
+    },
+    selectDeviceContainer: {
+        // backgroundColor: '#D34c5c',
+        height: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    selectDeviceButton: {
+        backgroundColor: colors.color3,
+        flex: 1,
+        flexDirection: 'row',
+        // borderColor: 'black',
+        // borderWidth: 2,
+        borderRadius: 20,
+        marginBottom: 10,
+        width: imageFrameDimension().maxWidth - 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    filenameInputContainer: {
+        // backgroundColor: 'yellow',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        height: 50,
+    },
+    filenameInputSet: {
+        backgroundColor: colors.color3,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        width: imageFrameDimension().maxWidth - 30,
+        paddingHorizontal: 20,
+    },
+    filenameInput: {
+        width: 250,
+        fontSize: 20,
+        marginLeft: 10,
+        marginRight: 15,
+        textAlign: 'center',
+        flex:1,
+    },
+
+
 })
 
 export default ImageConfirmationScreen;

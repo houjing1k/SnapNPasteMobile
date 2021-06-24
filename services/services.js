@@ -93,11 +93,16 @@ const services = {
             name: `photo.${fileType}`,
             type: `image/${fileType}`,
         });
-        formData.append('points', bb);
+
+        bb.forEach((point) => {
+            console.log(point);
+            formData.append('points', point);
+        });
+        console.log(formData);
 
         let uploadResult;
         try {
-            uploadResult = await (await postMultipart(URL.document_detection, formData, userToken)).json();
+            uploadResult = await (await postMultipart(URL.warp_image, formData, userToken)).json();
             console.log('results: ');
             console.log({uploadResult});
             if (uploadResult.detail === 'Unauthorized') {

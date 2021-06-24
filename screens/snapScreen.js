@@ -169,7 +169,7 @@ function SnapScreen({route, navigation}) {
                 break;
             case 'PDF':
                 console.log('Go to PDF Edit');
-                navigation.push('PdfEdit', {image: image});
+                navigation.push('PdfEdit', {image: await resizeImage(1200, 0.7, image)});
                 break;
             default:
                 console.log('No mode selected!');

@@ -1,52 +1,63 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
-import {useDispatch, useSelector} from "react-redux";
-import {selectDevice, sendText} from "../store/actions/chatActions";
+import { vw } from 'react-native-expo-viewport-units';
 
-function ConnectionsScreen({navigation}) {
+function ConnectionsScreen({ navigation }) {
 
-    const dispatch = useDispatch();
-    const chat = useSelector(state => state.chat);
-    // console.log(chat.deviceList);
-
+    const button1Action = () => {
+        // navigation.navigate('Home')
+    }
     const button2Action = () => {
-        sendText('Hello', chat);
+        // navigation.navigate('Signup');
     }
-    const selectDeviceAction = (deviceName) => {
-        selectDevice(dispatch, deviceName);
-    }
-    // selectDeviceAction('laptop');
+
+
 
     return (
         <View style={styles.container}>
-            <StatusBar/>
-            <Header navigation={navigation} text={'My Connections'} backEnabled={true}/>
+            <StatusBar />
+            <Header navigation={navigation} text={'My Connections'} backEnabled={true} />
             <View style={styles.contentContainer}>
-                <Text>{'Selected Device:'}</Text>
-                <Text>{chat.selectedDevice}</Text>
-                <Text>{'\n\nOnline devices:'}</Text>
-                {
-                    chat.deviceList.map((device) => {
-                        return (
-                            <TouchableOpacity key={chat.deviceList.indexOf(device)} onPress={() => {
-                                console.log('pressed ' + device);
-                                selectDeviceAction(device);
-                            }}>
-                                <Text>{device}</Text>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
-                <Text>{'\n\nDevice Name (UUID):'}</Text>
-                <Text>{chat.activeDevice}</Text>
-            </View>
+
+                <View style={styles.titleContainer}>
+                    <Text style={commonStyle.commonTextStyleDark}>Pasting To: </Text>
+                </View>
+
+                <ScrollView contentContainerStyle={styles.contentContainer}>
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>Kenny's laptop</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>Han Ming's laptop</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>Hou Jing's laptop</Text>
+
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>XX's laptop</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>YY's laptop</Text>
+                    </TouchableOpacity>
+
+                </ScrollView>
+
+
+                {/* </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={commonStyle.buttonDual} onPress={button2Action}>
-                    <Text style={styles.buttonText}>Send Text</Text>
+                <TouchableOpacity style={styles.button} onPress={button1Action}>
+                    <Text style={styles.buttonText}>Button 1</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={button2Action}>
+                    <Text style={styles.buttonText}>Button 2</Text>
+                </TouchableOpacity> */}
             </View>
 
         </View>
@@ -66,7 +77,8 @@ const styles = StyleSheet.create({
         // backgroundColor: '#D0D0D0',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start',
+        marginTop: 10,
     },
     bottomContainer: {
         flex: 1,
@@ -74,6 +86,28 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-end'
+    },
+
+    titleContainer: {
+        width: vw(65),
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 30,
+    },
+
+    connectionContainer: {
+        // backgroundColor: 'green',
+        width: 250,
+        height: 60,
+        paddingLeft: 15,
+        paddingRight: 10,
+        marginVertical: 20,
+        borderWidth: 2,
+        borderColor: colors.color3,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderRadius: 8,
     },
 })
 

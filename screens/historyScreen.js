@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, Image} from 'react-native';
+import { View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, Image, ScrollView } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
 import { vw, vh } from 'react-native-expo-viewport-units';
 import { color } from 'react-native-elements/dist/helpers';
 
-function HistoryScreen({navigation}) {
+function HistoryScreen({ navigation }) {
 
     const selectButton = () => {
         //navigation.navigate('TextConfirmation')
@@ -17,22 +17,33 @@ function HistoryScreen({navigation}) {
 
     return (
         <View style={styles.container}>
-            <StatusBar/>
-            <Header navigation={navigation} text={'History'} backEnabled={true}/>
+            <StatusBar />
+            <Header navigation={navigation} text={'History'} backEnabled={true} />
             <View style={styles.contentContainer}>
                 <View style={styles.historyContainer}>
-                    <View styles={styles.historyItemContainer}>
-                        <Image source={{width:vw(35), height:vh(25), uri:"https://picsum.photos/200/300",}}/> 
-                        <Image source={{width:vw(35), height:vh(25), uri:"https://picsum.photos/200/300",}}/> 
-                    </View>
-                    <View styles={styles.historyItemContainer}>
-                        <Image source={{width:vw(35), height:vh(25), uri:"https://picsum.photos/200/300",}}/> 
-                        <Image source={{width:vw(35), height:vh(25), uri:"https://picsum.photos/200/300",}}/> 
-                    </View>
+                    <ScrollView contentContainerStyles={styles.historyScrollContainer}>
+                        <View style={styles.historyItemContainer}>
+                            <Image source={{ width: vw(35), height: vh(25), uri: "https://picsum.photos/100/100", }} />
+                            <Image source={{ width: vw(35), height: vh(25), uri: "https://picsum.photos/100/100", }} />
+                        </View>
+
+                        <View style={styles.historyItemContainer}>
+                            <Image source={{ width: vw(35), height: vh(25), uri: "https://picsum.photos/100/100", }} />
+                            <Image source={{ width: vw(35), height: vh(25), uri: "https://picsum.photos/100/100", }} />
+                        </View>
+
+                        <View style={styles.historyItemContainer}>
+                            <Image source={{ width: vw(35), height: vh(25), uri: "https://picsum.photos/100/100", }} />
+                            <Image source={{ width: vw(35), height: vh(25), uri: "https://picsum.photos/100/100", }} />
+                        </View>
+
+
+                    </ScrollView>
+
 
                 </View>
             </View>
-            
+
             <View style={styles.bottomContainer}>
                 <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={selectButton}>
                     <Text style={styles.buttonText}>Select</Text>
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
 
-    historyContainer:{
+    historyContainer: {
         width: vw(85),
         height: vh(65),
         paddingLeft: 15,
@@ -84,13 +95,26 @@ const styles = StyleSheet.create({
         backgroundColor: colors.primaryColor,
     },
 
-    historyItemContainer:{
-        width: vw(85),
-        height: vw(65/2),
-        justifyContent: 'space-evenly',
-        backgroundColor: 'yellow'
-        
+    historyScrollContainer: {
+        // width: vw(85),
+        //height: vh(65 / 2),
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        //alignContent: 'center',
+        //backgroundColor: 'yellow',
+        //flexWrap: 'wrap',
+
+
     },
+
+    historyItemContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: vh(2),
+    }
+
+
 })
 
 export default HistoryScreen;

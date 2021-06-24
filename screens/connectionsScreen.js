@@ -1,11 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
 import { vw } from 'react-native-expo-viewport-units';
 
-function ConnectionsScreen({navigation}) {
+function ConnectionsScreen({ navigation }) {
 
     const button1Action = () => {
         // navigation.navigate('Home')
@@ -18,27 +18,39 @@ function ConnectionsScreen({navigation}) {
 
     return (
         <View style={styles.container}>
-            <StatusBar/>
-            <Header navigation={navigation} text={'My Connections'} backEnabled={true}/>
+            <StatusBar />
+            <Header navigation={navigation} text={'My Connections'} backEnabled={true} />
             <View style={styles.contentContainer}>
 
                 <View style={styles.titleContainer}>
                     <Text style={commonStyle.commonTextStyleDark}>Pasting To: </Text>
                 </View>
 
-                <TouchableOpacity style={styles.connectionContainer}>
-                    <Text>Kenny's laptop</Text>
-                </TouchableOpacity>
+                <ScrollView contentContainerStyle={styles.contentContainer}>
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>Kenny's laptop</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.connectionContainer}>
-                    <Text>Han Ming's laptop</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>Han Ming's laptop</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.connectionContainer}>
-                    <Text>Hou Jing's laptop</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>Hou Jing's laptop</Text>
 
-            {/* </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>XX's laptop</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.connectionContainer}>
+                        <Text>YY's laptop</Text>
+                    </TouchableOpacity>
+
+                </ScrollView>
+
+
+                {/* </View>
             <View style={styles.bottomContainer}>
                 <TouchableOpacity style={styles.button} onPress={button1Action}>
                     <Text style={styles.buttonText}>Button 1</Text>
@@ -66,7 +78,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginTop: 40,
+        marginTop: 10,
     },
     bottomContainer: {
         flex: 1,
@@ -76,10 +88,10 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
 
-    titleContainer:{
+    titleContainer: {
         width: vw(65),
         flexDirection: 'row',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         marginBottom: 30,
     },
 

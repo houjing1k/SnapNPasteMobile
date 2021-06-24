@@ -69,11 +69,11 @@ function AccountScreen({navigation}) {
                 <AccountItem text={'Account Settings'} iconName={'settings'}
                              onClickAction={() => navigation.push('AccountSetting')}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Upgrade to Premium \n(Coming Soon)'} iconName={'stars'}/>
+                <AccountItem text={'Upgrade to Premium'} iconName={'stars'} onClickAction={() => alert('Coming Soon!')}/>
                 <View style={styles.divider}/>
                 <AccountItem text={'Feedback'} iconName={'chat'} onClickAction={() => navigation.push('Feedback')}/>
                 <View style={styles.divider}/>
-                <AccountItem text={'Rate Us'} iconName={'thumb-up'}/>
+                <AccountItem text={'Rate Us'} iconName={'thumb-up'} onClickAction={() => alert('Coming Soon!')}/>
                 <View style={styles.divider}/>
             </ScrollView>
 

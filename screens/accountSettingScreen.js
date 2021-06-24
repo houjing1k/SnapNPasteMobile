@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
-import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, Alert, flexDirection} from 'react-native';
+import React, {useState} from 'react';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    SafeAreaView,
+    StatusBar,
+    TouchableOpacity,
+    Alert,
+    flexDirection,
+    Image
+} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {vw} from "react-native-expo-viewport-units";
-import { set } from 'react-native-reanimated';
+import {set} from 'react-native-reanimated';
+import {useSelector} from "react-redux";
 
 function AccountSettingScreen({navigation}) {
 
+    const account = useSelector(state => state.account);
+
     const [username, setUsername] = useState("")
 
-    const handleUsernameChange =(text) => {
+    const handleUsernameChange = (text) => {
         setUsername({
             ...username,
             username: text,
@@ -22,29 +36,29 @@ function AccountSettingScreen({navigation}) {
 
     const EditAvatar = () => {
         Alert.alert(
-            "Edit Avatar", 
+            "Edit Avatar",
             " ",
-            [{text:"Upload"},
-            {text:"Cancel"}]
-
+            [{text: "Upload"},
+                {text: "Cancel"}]
         );
     }
-    
+
     const EditName = () => {
-        Alert.prompt("Edit Name","Type in your name below",
-        [{text:"Confirm", onPress: (text)=> {handleUsernameChange(text)}},
-        {text: "Cancel"}])
-        
+        Alert.prompt("Edit Name", "Type in your name below",
+            [{
+                text: "Confirm", onPress: (text) => {
+                    handleUsernameChange(text)
+                }
+            },
+                {text: "Cancel"}])
+
     }
 
     const ProfileDetails = () => {
         return (
             <View style={styles.profileDetailsContainer}>
-                <View style={styles.avatarContainer}>
-                    <MaterialIcon name={'account-circle'} size={vw(35)}/>
-                </View>
-
-                <View style={styles.editButtonContainer}> 
+                <Image style={styles.avatarContainer} source={account.profilePicture}/>
+                <View style={styles.editButtonContainer}>
                     <TouchableOpacity style={styles.buttonSmall} onPress={EditAvatar}>
                         <Text style={styles.smallText}>Edit Avatar</Text>
                     </TouchableOpacity>
@@ -52,11 +66,11 @@ function AccountSettingScreen({navigation}) {
 
 
                 <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}>xxxxxxxxx.gmail.com</Text>
+                    <Text style={styles.detailText}>{account.email}</Text>
                 </View>
 
                 <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}>Account Type: Premium</Text>
+                    <Text style={styles.detailText}>{'Account Type: ' + account.subscriptionType}</Text>
                 </View>
 
             </View>
@@ -65,20 +79,20 @@ function AccountSettingScreen({navigation}) {
 
 
     const UsernameDetails = () => {
-        return(
+        return (
             <View style={styles.usernameDetailsContainer}>
                 <View style={styles.usernameTitle}>
-                    <Text style={commonStyle.commonTextStyleDark}>Name : </Text>
+                    <Text style={commonStyle.commonTextStyleDark}>Name :</Text>
                 </View>
 
                 <View style={styles.usernameName}>
-                    <Text style={commonStyle.commonTextStyleDark} numberOfLines={1}>{username}</Text>
+                    <Text style={commonStyle.commonTextStyleDark} >{account.username}</Text>
                 </View>
-                
-                <View style={styles.editButtonContainer}>
+
+                <View style={[styles.editButtonContainer,{maxWidth: 50}]}>
                     <TouchableOpacity style={styles.buttonTiny} onPress={EditName}>
                         <Text style={styles.smallText}>Edit</Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -99,7 +113,7 @@ function AccountSettingScreen({navigation}) {
             <View style={styles.contentContainer}>
                 <ProfileDetails/>
                 <View style={styles.divider}/>
-                <UsernameDetails/> 
+                <UsernameDetails/>
                 <View style={styles.divider}/>
             </View>
 
@@ -132,9 +146,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         marginTop: 20,
-        
+
     },
-    
+
     bottomContainer: {
         flex: 1,
         // backgroundColor: '#183fc8',
@@ -143,15 +157,15 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
 
-    profileDetailsContainer:{
+    profileDetailsContainer: {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         marginVertical: 10,
-        
+
 
     },
-    
+
     avatarContainer: {
         backgroundColor: colors.primaryColor,
         width: 150,
@@ -160,84 +174,84 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom:10,
-    }, 
-    
-    editButtonContainer:{
+        marginBottom: 10,
+    },
+
+    editButtonContainer: {
         width: vw(30),
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 10,
-        
+        // backgroundColor: 'green',
     },
-    
+
     buttonSmall: {
         backgroundColor: colors.primaryColor,
-        width: vw(20),
-        height: vw(10),
-        borderRadius: vw(10),
+        width: 80,
+        height: 30,
+        borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    
+
     buttonTiny: {
         backgroundColor: colors.primaryColor,
-        width: vw(10),
-        height: vw(5),
+        width: 40,
+        height: 22,
         borderRadius: vw(5),
         alignItems: 'center',
         justifyContent: 'center',
     },
 
-    usernameDetailsContainer:{
+    usernameDetailsContainer: {
         width: vw(85),
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
         marginVertical: 10,
-       // backgroundColor: 'yellow'
+        // backgroundColor: 'yellow'
 
     },
 
-    usernameTitle:{
+    usernameTitle: {
         width: vw(25),
+        maxWidth: 150,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        //backgroundColor: colors.primaryColor
+        // backgroundColor: colors.primaryColor
     },
 
-    usernameName:{
-        width: vw(40),
+    usernameName: {
+        flex:1,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-
-        
+        // backgroundColor: colors.primaryColor
     },
 
-    detailContainer:{
+    detailContainer: {
         width: vw(65),
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
-       
+        marginBottom: 15,
+
     },
 
-    detailText:{
+    detailText: {
         fontSize: 18,
     },
 
 
-    smallText:{
+    smallText: {
         fontSize: 13,
     },
 
- 
+
     divider: {
         width: vw(85),
-        marginVertical: 10,
+        marginVertical: 5,
         borderBottomColor: '#656565',
         borderBottomWidth: 1,
     },

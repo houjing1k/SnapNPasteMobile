@@ -21,6 +21,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {addAll, removeAll} from "../../store/actions/textSelectActions";
 import authenticationService from "../../services/authenticationService";
 import services from "../../services/services";
+import Loading from "../../components/Loading";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
@@ -28,7 +29,7 @@ const imageFrameDimension = () => {
     // console.log(maxWidth + " " + maxHeight)
     return {maxWidth, maxHeight};
 }
-const ocrEnabled = false;
+const ocrEnabled = true;
 
 function TextSelectScreen({route, navigation}) {
     const {image} = route.params;
@@ -63,7 +64,7 @@ function TextSelectScreen({route, navigation}) {
         // console.log(ocrResults);
         console.log('/////////// Selected Text ///////////////');
         console.log(processedText);
-        navigation.push('TextConfirmation', {text: processedText});
+        navigation.push('TextConfirmation', {text: processedText, fromHistory: false});
     }
 
     //Post Image to Server
@@ -73,7 +74,7 @@ function TextSelectScreen({route, navigation}) {
         let uri = image.uri;
         // let uri = 'https://images.twinkl.co.uk/tw1n/image/private/t_630/image_repo/6e/f9/T-L-5065-200-Common-Words-List_ver_3.jpg';
         uploadResult = await services.ocr(uri, account.userToken);
-        if(uploadResult!==null) setOcrResults(uploadResult);
+        if (uploadResult !== null) setOcrResults(uploadResult);
     }
 
     const selectAllAction = () => {
@@ -88,20 +89,11 @@ function TextSelectScreen({route, navigation}) {
     }
 
 
-    const Loading = () => {
-        return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <ActivityIndicator size={'large'} color={colors.iconDark}/>
-                <Text style={[commonStyle.commonTextStyleDark, {marginTop: 15}]}>Getting OCR Results</Text>
-            </View>
-        );
-    }
-
     return (
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Select Text'} backEnabled={true} cancelEnabled={true}/>
-            {isLoading ? <Loading/> :
+            {isLoading ? <Loading text={'Fetching OCR Results'}/> :
                 <View style={styles.container}>
                     <View style={[styles.contentContainer]}>
                         {/*<View>*/}
@@ -137,7 +129,8 @@ function TextSelectScreen({route, navigation}) {
                             marginBottom: 20,
                             backgroundColor: selectedText.length === 0 ? colors.grey : colors.primaryColor
                         }]}
-                                          onPress={previewButtonAction} disabled={ocrEnabled && selectedText.length === 0}>
+                                          onPress={previewButtonAction}
+                                          disabled={ocrEnabled && selectedText.length === 0}>
                             <Text
                                 style={commonStyle.commonTextStyleLight}>{selectedText.length === 0 ? 'Please select text' : 'Preview'}</Text>
                         </TouchableOpacity>

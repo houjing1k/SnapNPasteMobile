@@ -15,12 +15,12 @@ import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
-import {sendText} from "../../store/actions/chatActions";
+import {sendText, setHistory} from "../../store/actions/chatActions";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 function TextConfirmationScreen({route, navigation}) {
 
-    const {text} = route.params;
+    const {text, fromHistory} = route.params;
     const chat = useSelector(state => state.chat);
 
     const pasteButtonAction = () => {
@@ -36,10 +36,16 @@ function TextConfirmationScreen({route, navigation}) {
                 }
             ]
         );
+        if(!fromHistory) saveToHistory();
     }
+    const saveToHistory=()=>{
+        setHistory('TEXT',text);
+    }
+
     const selectDevice = () => {
         navigation.push('Connections');
     }
+
 
     return (
         <View style={styles.container}>

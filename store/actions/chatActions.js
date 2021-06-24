@@ -5,6 +5,7 @@ import chatReducer from "../reducers/chatReducer";
 import {AsyncStorage} from "react-native";
 import uuid from 'react-native-uuid';
 import {BYTEUS_URL} from "../../common/config";
+import {stringify} from "react-native-uuid/dist/stringify";
 
 const wsURL = BYTEUS_URL + '/ws';
 const io = require('socket.io-client')
@@ -75,3 +76,45 @@ export const sendText = async (message, chat) => {
         await socket.emit("transfer", chat.selectedDevice, message, "text");
     }
 };
+
+export const setHistory = async (type, content) => {
+    let newItemList = [];
+    const curItems = await getHistory();
+    if (curItems.length===0) {
+        console.log('NULL')
+        const newItem = {
+            id: 0,
+            type: type,
+            content: content,
+        }
+        newItemList.push(newItem);
+    } else {
+        newItemList = [...curItems];
+        const newItem = {
+            id: curItems[curItems.length-1].id + 1,
+            type: type,
+            content: content,
+        }
+        newItemList.push(newItem);
+    }
+    await AsyncStorage.setItem('historyItems',JSON.stringify(newItemList));
+    console.log('Stored History:')
+    console.log(newItemList);
+}
+
+export const getHistory = async () => {
+    const rawItems = await AsyncStorage.getItem('historyItems');
+    if (rawItems !== null) {
+        const items = JSON.parse(rawItems);
+        console.log(items);
+        return items;
+    } else {
+        console.log('No History Items');
+        return [];
+    }
+}
+
+export const clearHistory = async () => {
+    await AsyncStorage.removeItem('historyItems');
+    console.log('Cleared History')
+}

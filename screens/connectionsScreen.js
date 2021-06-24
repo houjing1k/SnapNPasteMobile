@@ -1,63 +1,57 @@
 import React from 'react';
-import { View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
+import {View, StyleSheet, Text, Button, SafeAreaView, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
-import { vw } from 'react-native-expo-viewport-units';
+import {vw} from 'react-native-expo-viewport-units';
+import {useDispatch, useSelector} from "react-redux";
+import {selectDevice, sendText} from "../store/actions/chatActions";
 
-function ConnectionsScreen({ navigation }) {
 
-    const button1Action = () => {
-        // navigation.navigate('Home')
-    }
+function ConnectionsScreen({navigation}) {
+
+    const dispatch = useDispatch();
+    const chat = useSelector(state => state.chat);
+    // console.log(chat.deviceList);
+
     const button2Action = () => {
         // navigation.navigate('Signup');
+        sendText('Hello', chat);
     }
-
+    const selectDeviceAction = (deviceName) => {
+        selectDevice(dispatch, deviceName);
+    }
 
 
     return (
         <View style={styles.container}>
-            <StatusBar />
-            <Header navigation={navigation} text={'My Connections'} backEnabled={true} />
+            <StatusBar/>
+            <Header navigation={navigation} text={'Device Selection'} backEnabled={true}/>
             <View style={styles.contentContainer}>
 
                 <View style={styles.titleContainer}>
-                    <Text style={commonStyle.commonTextStyleDark}>Pasting To: </Text>
+                    <Text style={commonStyle.commonTextStyleDark}>Pasting To :</Text>
                 </View>
 
                 <ScrollView contentContainerStyle={styles.contentContainer}>
-                    <TouchableOpacity style={styles.connectionContainer}>
-                        <Text>Kenny's laptop</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.connectionContainer}>
-                        <Text>Han Ming's laptop</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.connectionContainer}>
-                        <Text>Hou Jing's laptop</Text>
-
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.connectionContainer}>
-                        <Text>XX's laptop</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.connectionContainer}>
-                        <Text>YY's laptop</Text>
-                    </TouchableOpacity>
-
+                    {
+                        chat.deviceList.length !== 0 ?
+                            chat.deviceList.map((device) => {
+                                return (
+                                    <TouchableOpacity
+                                        style={[styles.connectionContainer, {borderColor: device === chat.selectedDevice ? colors.color4 : colors.color3}]}
+                                        key={chat.deviceList.indexOf(device)}
+                                        onPress={() => {
+                                            console.log('pressed ' + device);
+                                            selectDeviceAction(device);
+                                        }}>
+                                        <Text style={{fontSize: 16}}>{device}</Text>
+                                    </TouchableOpacity>
+                                )
+                            }) :
+                            <Text style={{fontSize: 18, fontWeight:'bold'}}>No online devices</Text>
+                    }
                 </ScrollView>
-
-
-                {/* </View>
-            <View style={styles.bottomContainer}>
-                <TouchableOpacity style={styles.button} onPress={button1Action}>
-                    <Text style={styles.buttonText}>Button 1</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={button2Action}>
-                    <Text style={styles.buttonText}>Button 2</Text>
-                </TouchableOpacity> */}
             </View>
 
         </View>
@@ -89,6 +83,7 @@ const styles = StyleSheet.create({
     },
 
     titleContainer: {
+        // backgroundColor: '#183fc8',
         width: vw(65),
         flexDirection: 'row',
         justifyContent: 'center',
@@ -101,12 +96,12 @@ const styles = StyleSheet.create({
         height: 60,
         paddingLeft: 15,
         paddingRight: 10,
-        marginVertical: 20,
+        marginBottom: 20,
         borderWidth: 2,
         borderColor: colors.color3,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         borderRadius: 8,
     },
 })

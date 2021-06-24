@@ -16,6 +16,7 @@ import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import {setHistory} from "../../store/actions/chatActions";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
@@ -26,14 +27,17 @@ const imageFrameDimension = () => {
 
 function ImageConfirmationScreen({route, navigation}) {
 
-    const {image} = route.params;
+    const {image, fromHistory} = route.params;
     const chat = useSelector(state => state.chat);
 
     const pasteButtonAction = () => {
-
+        if(!fromHistory) saveToHistory();
     }
     const saveButtonAction = () => {
-
+        if(!fromHistory) saveToHistory();
+    }
+    const saveToHistory = () => {
+        setHistory('IMAGE', JSON.stringify(image));
     }
 
     const selectDevice = () => {
@@ -160,7 +164,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 15,
         textAlign: 'center',
-        flex:1,
+        flex: 1,
     },
 
 

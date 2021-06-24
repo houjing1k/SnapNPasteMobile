@@ -20,6 +20,7 @@ import BoundingBox from "../../components/ocrBoundingBox";
 import {useDispatch, useSelector} from "react-redux";
 import authenticationService from "../../services/authenticationService";
 import services from "../../services/services";
+import Loading from "../../components/Loading";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
@@ -45,24 +46,15 @@ function ImageEditScreen({route, navigation}) {
     }, [])
 
     const previewButtonAction = () => {
-        navigation.push('ImageConfirmation', {image: manipulatedImage});
+        navigation.push('ImageConfirmation', {image: manipulatedImage, fromHistory: false});
     }
 
-
-    const Loading = () => {
-        return (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <ActivityIndicator size={'large'} color={colors.iconDark}/>
-                <Text style={[commonStyle.commonTextStyleDark, {marginTop: 15}]}>Loading</Text>
-            </View>
-        );
-    }
 
     return (
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Edit Image'} backEnabled={true} cancelEnabled={true}/>
-            {isLoading ? <Loading/> :
+            {isLoading ? <Loading text={'Loading'}/> :
                 <View style={styles.container}>
                     <View style={[styles.contentContainer]}>
                         <View style={styles.imageContainer}>

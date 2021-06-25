@@ -54,7 +54,7 @@ function PdfEditScreen({route, navigation}) {
     }, [])
 
     const previewButtonAction = () => {
-        navigation.push('PdfConfirmation', {image: manipulatedImage});
+        navigation.push('PdfConfirmation', {image: manipulatedImage, fromHistory: false});
     }
 
     const getPerspectiveBB = async () => {

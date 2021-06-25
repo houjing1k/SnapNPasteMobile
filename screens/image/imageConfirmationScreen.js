@@ -54,7 +54,7 @@ function ImageConfirmationScreen({route, navigation}) {
     }
 
     useEffect(() => {
-        // console.log(image);
+        console.log(image);
     }, [])
 
     return (

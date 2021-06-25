@@ -20,6 +20,8 @@ import BoundingBox from "../../components/ocrBoundingBox";
 import {useDispatch, useSelector} from "react-redux";
 import authenticationService from "../../services/authenticationService";
 import services from "../../services/services";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import PerspectiveBoundingBox from "../../components/perspectiveBoundingBox";
 import Loading from "../../components/Loading";
 
 const imageFrameDimension = () => {
@@ -35,7 +37,14 @@ function ImageEditScreen({route, navigation}) {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [manipulatedImage, setManipulatedImage] = useState(image);
+    const [manipulatedImage, setManipulatedImage] = useState(image.uri);
+    const [perspectiveBB, setPerspectiveBB] = useState([]);
+    const [controlMode, setControlMode] = useState(null);
+    const [perspectiveMode, setPerspectiveMode] = useState('AUTO');
+    const [controlState, setControlState] = useState({
+        perspective: false,
+        rotate: 0,
+    })
 
     const account = useSelector(state => state.account);
 
@@ -46,27 +55,134 @@ function ImageEditScreen({route, navigation}) {
     }, [])
 
     const previewButtonAction = () => {
-        navigation.push('ImageConfirmation', {image: manipulatedImage, fromHistory: false});
+        navigation.push('ImageConfirmation', {image: {uri: manipulatedImage}, fromHistory: false});
     }
 
+    const getPerspectiveBB = async () => {
+        try {
+            const bb = await services.documentDetect(image.uri, account.userToken);
+            // console.log(bb);
+            // console.log(bb.bb);
+            setPerspectiveBB(bb.bb);
+        } catch (e) {
+            console.log('Failed')
+        }
+    }
+    const applyPerspectiveWarp = async () => {
+        try {
+            console.log(perspectiveBB);
+            if (perspectiveBB.length === 8) {
+                const warpedImage = await services.warpImage(image.uri, perspectiveBB, account.userToken);
+                // let image = new Image();
+                // image.src = 'data:image/png;base64,iVBORw0K...';
+                // document.body.appendChild(image);
+                setManipulatedImage(`data:image/jpg;base64,${warpedImage.image}`)
+            }
+            // console.log(warpedImage);
+            // console.log(bb.bb);
+            // setPerspectiveBB(bb.bb);
+        } catch (e) {
+            console.log('Failed')
+        }
+        setControlMode(null);
+    }
+
+    useEffect(() => {
+
+    }, [perspectiveMode])
+
+
+    const ImageControlPanel = () => {
+        return (
+            <View style={controlStyles.controlsContainer}>
+                <View style={controlStyles.controlsTopContainer}>
+                    <TouchableOpacity style={controlStyles.controlButton} onPress={() => setControlMode('PERSPECTIVE')}>
+                        <MaterialIcon name={'settings-overscan'} size={35}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={controlStyles.controlButton} onPress={() => setControlMode('B&W')}>
+                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>B/W</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={controlStyles.controlButton} onPress={() => setControlMode('ROTATE')}>
+                        <MaterialIcon name={'rotate-90-degrees-ccw'} size={35}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={controlStyles.controlButton}
+                                      onPress={() => setControlMode('CROP_STRAIGHTEN')}>
+                        <MaterialIcon name={'crop-rotate'} size={35}/>
+                    </TouchableOpacity>
+                </View>
+                <BottomControl mode={controlMode}/>
+            </View>
+        )
+    }
+
+    const BottomControl = (props) => {
+        // console.log(props.mode);
+        switch (props.mode) {
+            case 'PERSPECTIVE':
+                return (
+                    <View style={controlStyles.controlsBottomContainer}>
+                        <TouchableOpacity style={controlStyles.optionButton} onPress={getPerspectiveBB}>
+                            <Text>Auto</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={controlStyles.optionButton}>
+                            <Text>Manual</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={controlStyles.optionButton}>
+                            <Text>Off</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={controlStyles.optionButton} onPress={applyPerspectiveWarp}>
+                            <Text>Apply</Text>
+                        </TouchableOpacity>
+                    </View>
+                );
+            case 'B&W':
+                return (
+                    <View style={controlStyles.controlsBottomContainer}>
+                        <Text>B&W</Text>
+                    </View>
+                );
+            case 'ROTATE':
+                return (
+                    <View style={controlStyles.controlsBottomContainer}>
+                        <Text>Rotate</Text>
+                    </View>
+                );
+            case 'CROP_STRAIGHTEN':
+                return (
+                    <View style={controlStyles.controlsBottomContainer}>
+                        <Text>Crop & Straighten</Text>
+                    </View>
+                );
+            default:
+                return (
+                    <View style={controlStyles.controlsBottomContainer}>
+                        <Text>Nothing Selected</Text>
+                    </View>
+                );
+        }
+    }
 
     return (
         <View style={styles.container}>
             <StatusBar/>
-            <Header navigation={navigation} text={'Edit Image'} backEnabled={true} cancelEnabled={true}/>
+            <Header navigation={navigation} text={'Edit PDF'} backEnabled={true} cancelEnabled={true}/>
             {isLoading ? <Loading text={'Loading'}/> :
                 <View style={styles.container}>
                     <View style={[styles.contentContainer]}>
                         <View style={styles.imageContainer}>
                             <Svg height={imageFrameDimension().maxHeight} width={imageFrameDimension().maxWidth}
                                  viewBox={"0 0 " + imageWidth + " " + imageHeight}>
-                                <Image width={imageWidth} height={imageHeight} href={image.uri}/>
+                                <Image width={imageWidth} height={imageHeight}
+                                       href={controlMode === 'PERSPECTIVE' ? image.uri : manipulatedImage}/>
+                                {
+                                    (controlMode === 'PERSPECTIVE' && perspectiveBB.length === 8) ?
+                                        <PerspectiveBoundingBox bb={perspectiveBB}/>
+                                        : null
+                                }
                             </Svg>
                         </View>
                     </View>
-                    <View style={styles.controlsContainer}>
-
-                    </View>
+                    <ImageControlPanel/>
                     <View style={styles.bottomContainer}>
                         <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, {
                             marginBottom: 20,
@@ -105,7 +221,7 @@ const styles = StyleSheet.create(
             // backgroundColor: '#183fc8',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
         },
         imageContainer: {
             backgroundColor: colors.color3,
@@ -114,24 +230,51 @@ const styles = StyleSheet.create(
             flex: 1,
             // borderRadius: 10,
         },
+    })
+
+const controlStyles = StyleSheet.create(
+    {
         controlsContainer: {
             // backgroundColor: '#25f375',
             alignItems: 'center',
-            justifyContent: 'center',
-            padding: 5,
+            justifyContent: 'flex-start',
+            paddingTop: 5,
             height: 120,
-        }
-        ,
-        controlButton: {
-            backgroundColor: colors.color3,
-            width: 180,
-            height: 50,
-            borderRadius: 25,
+        },
+        controlsTopContainer: {
+            width: vw(100),
+            height: 60,
+            // backgroundColor: '#E35621',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            marginBottom: 5,
+        },
+        controlsBottomContainer: {
+            width: vw(100),
+            flex: 1,
+            // backgroundColor: '#E3E621',
+            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: 20,
         },
-    }
-)
+        controlButton: {
+            backgroundColor: colors.color3,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        optionButton: {
+            backgroundColor: '#c3c3c3',
+            width: 70,
+            height: 35,
+            borderRadius: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginHorizontal: 5,
+        },
+    })
 
 export default ImageEditScreen;

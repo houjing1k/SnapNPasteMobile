@@ -17,7 +17,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import commonStyle from "../common/commonStyles";
 import {vw, vh} from "react-native-expo-viewport-units";
 import {AuthContext} from "../context/context";
-import logo from '../assets/snp-logo.jpeg'
+import logo from '../assets/snp-logo.png'
+import {SvgXml} from "react-native-svg";
+
 
 function LoginScreen({navigation}) {
 
@@ -89,13 +91,9 @@ function LoginScreen({navigation}) {
             <StatusBar/>
 
             <View style={styles.contentContainer}>
-
-                <Image style={styles.logoContainer} source={logo}>
-                    {/*<Icon name="camera-retro" size={120} color={'#000000'}/>*/}
-                    {/*{*/}
-                    {/*    keyboardStatus ? <View/> : <Text style={styles.title}>Snap-N-Paste</Text>*/}
-                    {/*}*/}
-                </Image>
+                
+                {/*<SvgXml xml={logo}/>*/}
+                <Image style={styles.logoContainer} source={logo}/>
                 <View style={styles.inputContainer}>
                     <View style={styles.inputSetContainer}>
                         <Icon name="envelope" size={30} style={styles.inputIcon} color={colors.grey}/>

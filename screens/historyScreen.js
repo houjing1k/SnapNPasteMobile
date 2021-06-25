@@ -22,6 +22,9 @@ import Loading from "../components/Loading";
 import services from "../services/services";
 import {useSelector} from "react-redux";
 import * as ImageManipulator from 'expo-image-manipulator';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import uuid from "react-native-uuid";
 
 function HistoryScreen({navigation}) {
 
@@ -66,6 +69,21 @@ function HistoryScreen({navigation}) {
         console.log(manipResult);
         return manipResult;
     }
+    // const base64ToImage = async (base64) => {
+    //
+    //     const filename = FileSystem.documentDirectory + uuid.v4() +".jpg";
+    //     await FileSystem.writeAsStringAsync(filename, base64, {
+    //         encoding: FileSystem.EncodingType.Base64,
+    //     }).then((res)=>console.log(res));
+    //
+    //     const mediaResult = await MediaLibrary.saveToLibraryAsync(filename)
+    //         .then((res)=> console.log(res));
+    //     console.log('----TESTING HERE----')
+    //     console.log(filename);
+    //     console.log(mediaResult);
+    //     console.log('------TEST END------')
+    //     return mediaResult;
+    // }
 
 
     const HistoryItemGrid = ({itemList}) => {
@@ -100,7 +118,8 @@ function HistoryScreen({navigation}) {
                                 style={[historyItemStyles.historyItemButton]}
                                 onPress={async() => {
                                     navigation.push('ImageConfirmation', {
-                                    image: await base64ToImage(item.content),
+                                    // image: await base64ToImage(item.content),
+                                    image: {uri:`data:image/jpeg;base64,${item.content}`},
                                     fromHistory: true
                                 })}}>
                                 <View>

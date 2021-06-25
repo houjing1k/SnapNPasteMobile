@@ -8,6 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
     ScrollView,
+    KeyboardAvoidingView,
     Alert, Image, Dimensions, TextInput
 } from 'react-native';
 import Header from "../../components/header";
@@ -58,7 +59,7 @@ function ImageConfirmationScreen({route, navigation}) {
     }, [])
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
             <StatusBar/>
             <Header navigation={navigation} text={'Preview Image'} backEnabled={true} cancelEnabled={true}/>
             <View style={styles.selectDeviceContainer}>
@@ -94,7 +95,7 @@ function ImageConfirmationScreen({route, navigation}) {
                 </TouchableOpacity>
             </View>
 
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 

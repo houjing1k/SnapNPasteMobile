@@ -6,6 +6,8 @@ import {AsyncStorage} from "react-native";
 import uuid from 'react-native-uuid';
 import {BYTEUS_URL} from "../../common/config";
 import {stringify} from "react-native-uuid/dist/stringify";
+import services from "../../services/services";
+import ExpoRandom from "expo-random/src/ExpoRandom";
 
 const wsURL = BYTEUS_URL + '/ws';
 const io = require('socket.io-client')
@@ -77,10 +79,10 @@ export const sendText = async (message, chat) => {
     }
 };
 
-export const setHistory = async (type, content) => {
+export const setLocalHistory = async (type, content, account) => {
     let newItemList = [];
-    const curItems = await getHistory();
-    if (curItems.length===0) {
+    const curItems = await getLocalHistory();
+    if (curItems.length === 0) {
         console.log('NULL')
         const newItem = {
             id: 0,
@@ -91,18 +93,19 @@ export const setHistory = async (type, content) => {
     } else {
         newItemList = [...curItems];
         const newItem = {
-            id: curItems[curItems.length-1].id + 1,
+            id: curItems[curItems.length - 1].id + 1,
             type: type,
             content: content,
         }
         newItemList.push(newItem);
+        await services.postCloudHistory(newItem, account.email, account.userToken);
     }
-    await AsyncStorage.setItem('historyItems',JSON.stringify(newItemList));
+    await AsyncStorage.setItem('historyItems', JSON.stringify(newItemList));
     console.log('Stored History:')
     console.log(newItemList);
 }
 
-export const getHistory = async () => {
+export const getLocalHistory = async () => {
     const rawItems = await AsyncStorage.getItem('historyItems');
     if (rawItems !== null) {
         const items = JSON.parse(rawItems);
@@ -114,7 +117,24 @@ export const getHistory = async () => {
     }
 }
 
-export const clearHistory = async () => {
+export const clearLocalHistory = async () => {
     await AsyncStorage.removeItem('historyItems');
     console.log('Cleared History')
+}
+
+export const setCloudHistory = async (type, content, account) => {
+    const newItem = {
+        id: 1,
+        type: type,
+        content: content,
+    }
+    await services.postCloudHistory(newItem, account.email, account.userToken);
+}
+
+export const getCloudHistory = async (account) => {
+    return await services.getCloudHistory(account.email, account.userToken);
+}
+
+export const clearCloudHistory = async (account) => {
+    await services.deleteCloudHistory(account.email,account.userToken);
 }

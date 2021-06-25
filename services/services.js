@@ -136,8 +136,72 @@ const services = {
             alert('Upload failed, sorry :(');
             return 'FAILED'
         }
-    }
+    },
+    getCloudHistory: async(email, userToken)=>{
+        try {
+            const response = await axios.get(URL.getUserHistory(email),
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                    },
+                });
+            // console.log(response.data);
+            // alert('Success');
+
+            //Decode Response
+            const data = response.data;
+            let itemList=[];
+            data.map((e)=>{
+                itemList.push(JSON.parse(e.text));
+            })
+
+            return itemList;
+
+        } catch (e) {
+            console.log(e);
+            alert('Upload failed, sorry :(');
+            return [];
+        }
+    },
+    postCloudHistory: async(historyItem, email, userToken)=>{
+        try {
+            const response = await axios.post(URL.postUserHistory(email),
+                {
+                    text: JSON.stringify(historyItem),
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                    },
+                })
+            // console.log(response);
+            // alert('Success');
+            return 'SUCCESS'
+        } catch (e) {
+            console.log(e);
+            alert('Upload failed, sorry :(');
+            return 'FAILED'
+        }
+    },
+    deleteCloudHistory: async(email, userToken)=>{
+        try {
+            const response = await axios.delete(URL.deleteUserHistory(email),
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                    },
+                })
+            // console.log(response);
+            // alert('Success');
+            return 'SUCCESS'
+        } catch (e) {
+            console.log(e);
+            alert('Upload failed, sorry :(');
+            return 'FAILED'
+        }
+    },
 }
+
 
 const postMultipart = (url, formData, userToken) => {
     // console.log("token: "+ userToken);

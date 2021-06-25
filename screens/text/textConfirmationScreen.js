@@ -15,11 +15,13 @@ import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
-import {sendText, setHistory} from "../../store/actions/chatActions";
+import {sendText, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import services from "../../services/services";
 
 function TextConfirmationScreen({route, navigation}) {
 
+    const account = useSelector(state => state.account);
     const {text, fromHistory} = route.params;
     const chat = useSelector(state => state.chat);
 
@@ -36,10 +38,11 @@ function TextConfirmationScreen({route, navigation}) {
                 }
             ]
         );
-        if(!fromHistory) saveToHistory();
+        if (!fromHistory) saveToHistory();
     }
-    const saveToHistory=()=>{
-        setHistory('TEXT',text);
+    const saveToHistory = async () => {
+        // setLocalHistory('TEXT', text, account);
+        setCloudHistory('TEXT', text, account);
     }
 
     const selectDevice = () => {
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
         // borderWidth: 2,
         borderRadius: 20,
         marginBottom: 10,
-        width: vw(100)-30,
+        width: vw(100) - 30,
         justifyContent: 'center',
         alignItems: 'center',
     },

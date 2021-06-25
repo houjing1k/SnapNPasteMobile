@@ -94,8 +94,8 @@ const authenticationService = {
         }
     },
     updateName: async (newName, userToken) => {
-        axios.patch(
-            'http://localhost:8000/users/me',
+        await axios.patch(
+            URL.me,
             {
                 username: newName,
             },
@@ -107,11 +107,13 @@ const authenticationService = {
         )
             .then((response) => {
                 console.log(response);
-                console.log('Update successful')
+                console.log('SUCCESS');
+                return 'SUCCESS';
             })
             .catch((error) => {
-                console.log(error)
-                console.log('Update Failed')
+                console.log(error);
+                console.log('FAILED');
+                return 'FAILED';
             });
     },
 }

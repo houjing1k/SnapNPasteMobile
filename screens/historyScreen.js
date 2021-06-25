@@ -17,11 +17,15 @@ import {vw, vh} from 'react-native-expo-viewport-units';
 import {color} from 'react-native-elements/dist/helpers';
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import Svg from "react-native-svg";
-import {clearHistory, getHistory} from "../store/actions/chatActions";
+import {clearCloudHistory, clearLocalHistory, getCloudHistory, getLocalHistory} from "../store/actions/chatActions";
 import Loading from "../components/Loading";
+import services from "../services/services";
+import {useSelector} from "react-redux";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 function HistoryScreen({navigation}) {
 
+    const account = useSelector(state => state.account);
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +33,9 @@ function HistoryScreen({navigation}) {
 
     useEffect(() => {
         (async () => {
-            const itemList = await getHistory();
+            const itemList = await getCloudHistory(account);
+            console.log(itemList);
+            // const itemList = await getLocalHistory();
             setHistoryItemList(itemList);
             setIsLoading(false);
         })()
@@ -39,7 +45,8 @@ function HistoryScreen({navigation}) {
         Alert.alert("Are you sure?", "Clearing of history is permanent and irreversible",
             [{
                 text: "Confirm", onPress: (text) => {
-                    clearHistory();
+                    clearLocalHistory();
+                    clearCloudHistory(account);
                     setHistoryItemList([]);
                 }
             },
@@ -50,9 +57,19 @@ function HistoryScreen({navigation}) {
         console.log(selectedItem)
     }, [selectedItem])
 
+    const base64ToImage = async (base64) => {
+        const manipResult = await ImageManipulator.manipulateAsync(
+            `data:image/jpeg;base64,${base64}`,
+            [],
+            {compress: 1, format: ImageManipulator.SaveFormat.JPEG}
+        );
+        console.log(manipResult);
+        return manipResult;
+    }
+
 
     const HistoryItemGrid = ({itemList}) => {
-        itemList=itemList.reverse();
+        itemList = itemList.reverse();
         let list = [];
         let isEven = itemList.length % 2 === 0;
         let listRowSize = isEven ? itemList.length : itemList.length + 1;
@@ -81,12 +98,13 @@ function HistoryScreen({navigation}) {
                             style={[historyItemStyles.historyItemContainer, {borderColor: selectedItem === item ? colors.color4 : colors.color3}]}>
                             <TouchableOpacity
                                 style={[historyItemStyles.historyItemButton]}
-                                onPress={() => navigation.push('ImageConfirmation', {
-                                    image: JSON.parse(item.content),
+                                onPress={async() => {
+                                    navigation.push('ImageConfirmation', {
+                                    image: await base64ToImage(item.content),
                                     fromHistory: true
-                                })}>
+                                })}}>
                                 <View>
-                                    <Image source={JSON.parse(item.content)} style={historyItemStyles.historyImage}/>
+                                    <Image source={{uri:`data:image/jpeg;base64,${item.content}`}} style={historyItemStyles.historyImage}/>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -121,10 +139,14 @@ function HistoryScreen({navigation}) {
             {
                 isLoading ? <Loading text={'Loading'}/> :
                     <View style={styles.contentContainer}>
-                        <ScrollView contentContainerStyles={styles.historyScrollContainer}
-                                    showsVerticalScrollIndicator={false}>
-                            <HistoryItemGrid itemList={historyItemList}/>
-                        </ScrollView>
+                        {
+                            historyItemList.length === 0 ?
+                                <Text style={{fontSize: 18}}>No Items in History</Text> :
+                                <ScrollView contentContainerStyles={styles.historyScrollContainer}
+                                            showsVerticalScrollIndicator={false}>
+                                    <HistoryItemGrid itemList={historyItemList}/>
+                                </ScrollView>
+                        }
                     </View>
             }
             <View style={styles.bottomContainer}>
@@ -137,7 +159,7 @@ function HistoryScreen({navigation}) {
 
         </View>
     );
-}
+};
 
 
 const styles = StyleSheet.create({

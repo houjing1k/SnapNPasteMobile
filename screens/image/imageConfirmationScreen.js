@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     StyleSheet,
@@ -16,7 +16,9 @@ import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import {setHistory} from "../../store/actions/chatActions";
+import {setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
+import * as FileSystem from 'expo-file-system';
+import filenameGenerator from "../../components/filenameGenerator";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
@@ -29,20 +31,31 @@ function ImageConfirmationScreen({route, navigation}) {
 
     const {image, fromHistory} = route.params;
     const chat = useSelector(state => state.chat);
+    const account = useSelector(state => state.account);
+    const [filename, setFilename] = useState(filenameGenerator())
 
     const pasteButtonAction = () => {
-        if(!fromHistory) saveToHistory();
+        if (!fromHistory) saveToHistory();
+        navigation.navigate('Home');
     }
     const saveButtonAction = () => {
-        if(!fromHistory) saveToHistory();
+        if (!fromHistory) saveToHistory();
+        navigation.navigate('Home');
     }
-    const saveToHistory = () => {
-        setHistory('IMAGE', JSON.stringify(image));
+    const saveToHistory = async () => {
+        const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
+        // console.log(base64);
+        // setLocalHistory('IMAGE', JSON.stringify(image));
+        setCloudHistory('IMAGE', base64, account);
     }
 
     const selectDevice = () => {
         navigation.push('Connections');
     }
+
+    useEffect(() => {
+        // console.log(image);
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -64,7 +77,8 @@ function ImageConfirmationScreen({route, navigation}) {
             <View style={styles.filenameInputContainer}>
                 <View style={styles.filenameInputSet}>
                     <MaterialIcon name={'attach-file'} size={30}/>
-                    <TextInput style={styles.filenameInput} placeholder={'File Name'}/>
+                    <TextInput style={styles.filenameInput} placeholder={'File Name'} value={filename}
+                               onChangeText={(text) => setFilename(text)}/>
                 </View>
             </View>
             <View style={styles.bottomContainer}>

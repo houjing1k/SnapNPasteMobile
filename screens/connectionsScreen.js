@@ -33,7 +33,7 @@ function ConnectionsScreen({navigation}) {
                     <Text style={commonStyle.commonTextStyleDark}>Pasting To :</Text>
                 </View>
 
-                <ScrollView contentContainerStyle={styles.contentContainer}>
+                <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
                     {
                         chat.deviceList.length !== 0 ?
                             chat.deviceList.map((device) => {

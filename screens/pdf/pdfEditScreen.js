@@ -40,6 +40,10 @@ function PdfEditScreen({route, navigation}) {
     const [perspectiveBB, setPerspectiveBB] = useState([]);
     const [controlMode, setControlMode] = useState(null);
     const [perspectiveMode,setPerspectiveMode]=useState('AUTO');
+    const [controlState, setControlState]=useState({
+        perspective: false,
+        rotate: 0,
+    })
 
     const account = useSelector(state => state.account);
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     View,
     StyleSheet,
@@ -18,19 +18,24 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {vw} from "react-native-expo-viewport-units";
 import {set} from 'react-native-reanimated';
 import {useSelector} from "react-redux";
+import services from "../services/services";
+import {AuthContext} from "../context/context";
+import authenticationService from "../services/authenticationService";
 
 function AccountSettingScreen({navigation}) {
 
     const account = useSelector(state => state.account);
+    const {getProfile, updateUsername} = useContext(AuthContext);
 
     const [username, setUsername] = useState("")
 
     const handleUsernameChange = (text) => {
-        setUsername({
-            ...username,
-            username: text,
-            isValidEmail: text !== '',
-        });
+        // setUsername({
+        //     ...username,
+        //     username: text,
+        //     isValidEmail: text !== '',
+        // });
+        updateUsername(text, account.userToken);
     }
 
 
@@ -86,10 +91,10 @@ function AccountSettingScreen({navigation}) {
                 </View>
 
                 <View style={styles.usernameName}>
-                    <Text style={commonStyle.commonTextStyleDark} >{account.username}</Text>
+                    <Text style={commonStyle.commonTextStyleDark}>{account.username}</Text>
                 </View>
 
-                <View style={[styles.editButtonContainer,{maxWidth: 50}]}>
+                <View style={[styles.editButtonContainer, {maxWidth: 50}]}>
                     <TouchableOpacity style={styles.buttonTiny} onPress={EditName}>
                         <Text style={styles.smallText}>Edit</Text>
                     </TouchableOpacity>
@@ -100,7 +105,7 @@ function AccountSettingScreen({navigation}) {
     }
 
     const button1Action = () => {
-        // navigation.navigate('Home')
+        handleUsernameChange('TEST');
     }
     const button2Action = () => {
         // navigation.navigate('Signup');
@@ -117,14 +122,14 @@ function AccountSettingScreen({navigation}) {
                 <View style={styles.divider}/>
             </View>
 
-            {/* <View style={styles.bottomContainer}>
-                <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>
-                    <Text style={[commonStyle.commonTextStyleLight]}>Button 1</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button2Action}>
-                    <Text style={[commonStyle.commonTextStyleLight]}>Button 2</Text>
-                </TouchableOpacity>
-            </View> */}
+            {/*<View style={styles.bottomContainer}>*/}
+            {/*    <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button1Action}>*/}
+            {/*        <Text style={[commonStyle.commonTextStyleLight]}>Button 1</Text>*/}
+            {/*    </TouchableOpacity>*/}
+            {/*    <TouchableOpacity style={[commonStyle.buttonDual, commonStyle.dropShadow]} onPress={button2Action}>*/}
+            {/*        <Text style={[commonStyle.commonTextStyleLight]}>Button 2</Text>*/}
+            {/*    </TouchableOpacity>*/}
+            {/*</View>*/}
 
         </View>
     );
@@ -223,7 +228,7 @@ const styles = StyleSheet.create({
     },
 
     usernameName: {
-        flex:1,
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',

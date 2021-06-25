@@ -11,6 +11,7 @@ import {
     TextInput,
     KeyboardAvoidingView,
     flexWrap,
+    ScrollView
 } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
@@ -19,6 +20,7 @@ import {useEffect, useState} from 'react' ;
 import axios from "axios";
 import services from "../services/services";
 import {useSelector} from "react-redux";
+import {vw, vh} from "react-native-expo-viewport-units";
 
 function FeedbackScreen({navigation}) {
 
@@ -88,7 +90,7 @@ function FeedbackScreen({navigation}) {
     }, [data])
 
     return (
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
 
             <View style={styles.container}>
                 <StatusBar/>
@@ -97,7 +99,7 @@ function FeedbackScreen({navigation}) {
                 <View style={styles.contentContainer}>
                     <View style={styles.inputSetContainer}>
                         <View style={styles.textStyle}>
-                            <Text style={commonStyle.commonTextStyleDark}>Title : </Text>
+                            <Text style={commonStyle.commonTextStyleDark}>Title: </Text>
                         </View>
                         <View style={styles.inputFieldContainer}>
                             <TextInput
@@ -110,7 +112,7 @@ function FeedbackScreen({navigation}) {
 
                     <View style={[styles.inputSetContainer]}>
                         <View style={[styles.textStyle, {marginTop: 28}]}>
-                            <Text style={commonStyle.commonTextStyleDark}>Feedback : </Text>
+                            <Text style={commonStyle.commonTextStyleDark}>Feedback: </Text>
                         </View>
                         <View style={styles.inputFieldContainerBig} flexDirection='row'>
                             <TextInput
@@ -138,18 +140,22 @@ function FeedbackScreen({navigation}) {
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: colors.background,
+        //backgroundColor: 'yellow',
         flexDirection: 'column',
         justifyContent: 'flex-start',
         height: '100%',
     },
     contentContainer: {
         flex: 1,
-        // backgroundColor: 'cyan',
+        //width: vw(100),
+        //height: vh(90),
+        //backgroundColor: 'cyan',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: 15,
+        //overflow: 'hidden'
+
     },
     bottomContainer: {
         height: 90,
@@ -158,6 +164,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-end',
         paddingBottom: 20,
+        //flex: 1,
     },
 
     inputContainer: {
@@ -175,12 +182,12 @@ const styles = StyleSheet.create({
     inputFieldContainer: {
         // backgroundColor: 'blue',
         // width: 250,
-        height: 50,
+        height: vh(8),
         paddingLeft: 15,
         paddingRight: 10,
         marginVertical: 5,
         borderWidth: 2,
-        borderColor: colors.color3,
+        borderColor: colors.color4,
         flexDirection: 'column',
         flex: 1,
         alignItems: 'flex-start',
@@ -191,13 +198,13 @@ const styles = StyleSheet.create({
     inputFieldContainerBig: {
         // backgroundColor: 'green',
         // width: 250,
-        height: 250,
+        height: vh(30),
         paddingLeft: 15,
         paddingRight: 10,
         paddingTop: 5,
         marginVertical: 10,
         borderWidth: 2,
-        borderColor: colors.color3,
+        borderColor: colors.color4,
         flexDirection: 'column',
         flex: 1,
         alignItems: 'flex-start',
@@ -218,6 +225,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'orange',
         width: 85,
         marginTop: 20,
+        marginHorizontal: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',

@@ -8,6 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
     Alert,
+    KeyboardAvoidingView,
     TextInput, ScrollView
 } from 'react-native';
 import Header from "../components/header";
@@ -114,7 +115,7 @@ function SignupScreen({navigation}) {
     }, [data])
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
             <StatusBar/>
             <Header navigation={navigation} text={"Sign Up"} backEnabled={true} cancelEnabled={false}/>
 
@@ -158,7 +159,7 @@ function SignupScreen({navigation}) {
                 </TouchableOpacity>
             </View>
 
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 

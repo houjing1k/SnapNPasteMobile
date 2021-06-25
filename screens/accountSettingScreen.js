@@ -21,6 +21,7 @@ import {useSelector} from "react-redux";
 import services from "../services/services";
 import {AuthContext} from "../context/context";
 import authenticationService from "../services/authenticationService";
+import prompt from 'react-native-prompt-android';
 
 function AccountSettingScreen({navigation}) {
 
@@ -49,13 +50,18 @@ function AccountSettingScreen({navigation}) {
     }
 
     const EditName = () => {
-        Alert.prompt("Edit Name", "Type in your name below",
+        prompt("Edit Name", "Type in your name below",
             [{
-                text: "Confirm", onPress: (text) => {
-                    handleUsernameChange(text)
-                }
+                text: "Confirm", onPress: (text) => {handleUsernameChange(text)}
+                
             },
-                {text: "Cancel"}])
+                {text: "Cancel"}], 
+                {
+                    type: 'plain-text',
+                    cancelable: true,
+                    defaultValue: '',
+                    placeholder: 'Name'
+                })
 
     }
 

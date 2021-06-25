@@ -87,7 +87,7 @@ function LoginScreen({navigation}) {
     const _keyboardDidHide = () => setKeyboardStatus(false);
 
     return (
-        <KeyboardAvoidingView style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
             <StatusBar/>
 
             <View style={styles.contentContainer}>

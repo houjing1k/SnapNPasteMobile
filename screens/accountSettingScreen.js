@@ -9,37 +9,35 @@ import {
     TouchableOpacity,
     Alert,
     flexDirection,
-    Image
+    Image, 
+    Modal, 
+    TextInput
 } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import {vw} from "react-native-expo-viewport-units";
+import {vh, vw} from "react-native-expo-viewport-units";
 import {set} from 'react-native-reanimated';
 import {useSelector} from "react-redux";
 import services from "../services/services";
 import {AuthContext} from "../context/context";
 import authenticationService from "../services/authenticationService";
 import DialogInput from "react-native-dialog-input";
+import { color } from 'react-native-elements/dist/helpers';
 
 function AccountSettingScreen({navigation}) {
 
     const account = useSelector(state => state.account);
+
     const {getProfile, updateUsername} = useContext(AuthContext);
 
-    const [username, setUsername] = useState("")
+   // const [username, setUsername] = useState("")
 
-    const[Dialog, setDialog] = useState({
-        isDialogVisible: true,
-        
-    })
+    const [visible, setVisible] = useState(false);
 
-    function showDialog(isShow) {
-        setDialog({
-            ...Dialog, 
-            isDialogVisible: isShow});
-    }
+    const [text, onTextChange] = useState('');
+
 
     const handleUsernameChange = (text) => {
         // setUsername({
@@ -47,9 +45,37 @@ function AccountSettingScreen({navigation}) {
         //     username: text,
         //     isValidEmail: text !== '',
         // });
+        setVisible(!visible)
         updateUsername(text, account.userToken);
+        
     }
 
+
+    const ModalInput = ({ onTextChange, onSubmit, visible, value, toggle}) => {
+        return(
+            <View style={styles.centeredView}>
+                    <Modal animationType='fade' visible={visible} transparent={true} style={{justifyContent:'center'}}> 
+                        <View style={styles.promptContainer}>
+                            <Text style={styles.textStyle2}>Edit Username</Text>
+                            <Text style={styles.textStyle1}>Enter your name below:</Text>
+                            <TextInput 
+                                value={value}
+                                onChangeText= {onTextChange}
+                                placeholder={'Name'}
+                            />
+
+                            <View style={styles.promptButtonContainer}>
+                                <Button title="Confirm" onPress={onSubmit}/>
+                                <Button title="Cancel" onPress={toggle}/>
+                            </View>
+
+                        </View>
+
+                    </Modal>     
+            </View>
+            
+        );
+    };
 
     const EditAvatar = () => {
         Alert.alert(
@@ -60,17 +86,29 @@ function AccountSettingScreen({navigation}) {
         );
     }
 
-    const EditName = () => {
-        return(
-            <DialogInput isDialogVisible={true}
-                title={"Edit Name"}
-                message={"Please enter your name below"}
-                hintInput ={"Name"}
-                submitInput={ (inputText) => {handleUsernameChange(inputText)} }
-                closeDialog={ () => {showDialog(false)}}>
-            </DialogInput> 
+    const editName = () => {
 
-        )
+        <ModalInput
+            visible={visible}
+            value={text}
+            onTextChange={onTextChange}
+            toggle={()=> setVisible(!visible)}
+            onSubmit={()=>setVisible(!visible)}
+        />
+         
+            
+    
+            // <DialogInput isDialogVisible={true}
+            //     title={"Edit Name"}
+            //     message={"Please enter your name below"}
+            //     hintInput ={"Name"}
+            //     submitInput={ (inputText) => {handleUsernameChange(inputText)} }
+            //     closeDialog={ () => {showDialog(false)}}>
+            // </DialogInput>
+            
+           
+
+        
             
 
     }
@@ -111,7 +149,7 @@ function AccountSettingScreen({navigation}) {
                 </View>
 
                 <View style={[styles.editButtonContainer, {maxWidth: 50}]}>
-                    <TouchableOpacity style={styles.buttonTiny} onPress={EditName}>
+                    <TouchableOpacity style={styles.buttonTiny} onPress={()=> setVisible(!visible)}>
                         <Text style={styles.smallText}>Edit</Text>
                     </TouchableOpacity>
                 </View>
@@ -131,11 +169,19 @@ function AccountSettingScreen({navigation}) {
         <View style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Account Settings'} backEnabled={true}/>
+
             <View style={styles.contentContainer}>
                 <ProfileDetails/>
                 <View style={styles.divider}/>
                 <UsernameDetails/>
                 <View style={styles.divider}/>
+                <ModalInput
+                        visible={visible}
+                        value={text}
+                        onTextChange={onTextChange}
+                        toggle={()=> setVisible(!visible)}
+                        onSubmit={()=>setVisible(!visible)}
+                />
             </View>
 
             {/*<View style={styles.bottomContainer}>*/}
@@ -276,6 +322,45 @@ const styles = StyleSheet.create({
         borderBottomColor: '#656565',
         borderBottomWidth: 1,
     },
+
+    promptContainer:{
+        width: vw(65),
+        height: vh(20), 
+        padding: 20, 
+        borderRadius: 20,
+        alignSelf: 'center', 
+        backgroundColor: colors.color1
+    }, 
+
+    promptButtonContainer:{
+        flexDirection:'row',
+        alignSelf:'center',
+        alignItems: 'flex-end',
+        marginVertical: 10
+    }, 
+
+    centeredView:{
+        //width: vw(85),
+        //height: vh(40), 
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center',
+        marginTop: 22,
+        backgroundColor: 'yellow'
+    }, 
+
+    textStyle1:{
+        fontSize: 13,
+        marginVertical: 3,
+    },
+
+    textStyle2:{
+        flexDirection:'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 18,
+        marginVertical: 3,
+    }
 
 })
 

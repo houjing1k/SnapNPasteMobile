@@ -21,7 +21,7 @@ import {useSelector} from "react-redux";
 import services from "../services/services";
 import {AuthContext} from "../context/context";
 import authenticationService from "../services/authenticationService";
-import prompt from 'react-native-prompt-android';
+import DialogInput from "react-native-dialog-input";
 
 function AccountSettingScreen({navigation}) {
 
@@ -29,6 +29,17 @@ function AccountSettingScreen({navigation}) {
     const {getProfile, updateUsername} = useContext(AuthContext);
 
     const [username, setUsername] = useState("")
+
+    const[Dialog, setDialog] = useState({
+        isDialogVisible: true,
+        
+    })
+
+    function showDialog(isShow) {
+        setDialog({
+            ...Dialog, 
+            isDialogVisible: isShow});
+    }
 
     const handleUsernameChange = (text) => {
         // setUsername({
@@ -50,18 +61,17 @@ function AccountSettingScreen({navigation}) {
     }
 
     const EditName = () => {
-        prompt("Edit Name", "Type in your name below",
-            [{
-                text: "Confirm", onPress: (text) => {handleUsernameChange(text)}
-                
-            },
-                {text: "Cancel"}], 
-                {
-                    type: 'plain-text',
-                    cancelable: true,
-                    defaultValue: '',
-                    placeholder: 'Name'
-                })
+        return(
+            <DialogInput isDialogVisible={true}
+                title={"Edit Name"}
+                message={"Please enter your name below"}
+                hintInput ={"Name"}
+                submitInput={ (inputText) => {handleUsernameChange(inputText)} }
+                closeDialog={ () => {showDialog(false)}}>
+            </DialogInput> 
+
+        )
+            
 
     }
 

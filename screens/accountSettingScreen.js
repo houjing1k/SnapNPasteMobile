@@ -32,21 +32,16 @@ function AccountSettingScreen({navigation}) {
 
     const {getProfile, updateUsername} = useContext(AuthContext);
 
-   // const [username, setUsername] = useState("")
+    const [newUsername, setNewUsername] = useState("")
 
     const [visible, setVisible] = useState(false);
 
     const [text, onTextChange] = useState('');
 
 
-    const handleUsernameChange = (text) => {
-        // setUsername({
-        //     ...username,
-        //     username: text,
-        //     isValidEmail: text !== '',
-        // });
-        setVisible(!visible)
-        updateUsername(text, account.userToken);
+    const submitUsernameChange = () => {
+        console.log(newUsername)
+        updateUsername(newUsername, account.userToken);
         
     }
 
@@ -87,31 +82,9 @@ function AccountSettingScreen({navigation}) {
         );
     }
 
-    const editName = () => {
+    const EditName = () => {
 
-        <ModalInput
-            visible={visible}
-            value={text}
-            onTextChange={onTextChange}
-            toggle={()=> setVisible(!visible)}
-            onSubmit={()=>setVisible(!visible)}
-        />
-         
-            
-    
-            // <DialogInput isDialogVisible={true}
-            //     title={"Edit Name"}
-            //     message={"Please enter your name below"}
-            //     hintInput ={"Name"}
-            //     submitInput={ (inputText) => {handleUsernameChange(inputText)} }
-            //     closeDialog={ () => {showDialog(false)}}>
-            // </DialogInput>
-            
-           
-
-        
-            
-
+        setVisible(true);
     }
 
     const ProfileDetails = () => {
@@ -176,13 +149,42 @@ function AccountSettingScreen({navigation}) {
                 <View style={styles.divider}/>
                 <UsernameDetails/>
                 <View style={styles.divider}/>
-                <ModalInput
-                        visible={visible}
-                        value={text}
-                        onTextChange={onTextChange}
-                        toggle={()=> setVisible(!visible)}
-                        onSubmit={(text)=>handleUsernameChange(text)}
-                />
+                <Modal animationType='fade' visible={visible} transparent={true} style={styles.modalContainer}> 
+                        <View style={styles.promptContainer}>
+                            <Text style={styles.textStyle2}>Edit Username</Text>
+                            <View style={styles.divider2}/>
+                            <Text style={styles.textStyle1}>Enter your name below:</Text>
+                            <TextInput 
+                                
+                                onChangeText= {(text)=>setNewUsername(text)}
+                                placeholder={'Enter Name'}
+                            />
+
+                            <View style={styles.promptButtonContainer}>
+                                
+                                <View style={styles.individualButton}>
+                                    <TouchableOpacity onPress={ ()=>
+                                        {setVisible(false);
+                                        submitUsernameChange();}}>
+                                        <Text style={commonStyle.commonTextStyleDark}>Confirm</Text>
+
+                                    </TouchableOpacity>
+                                </View>
+                                
+                                <View style={styles.individualButton}>
+                                    <TouchableOpacity onPress={()=>setVisible(false)}>
+                                        <Text style={commonStyle.commonTextStyleDark}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                
+                                    
+                                
+                                
+                            </View>
+
+                        </View>
+
+                    </Modal>  
             </View>
 
             {/*<View style={styles.bottomContainer}>*/}
@@ -338,14 +340,16 @@ const styles = StyleSheet.create({
         padding: 20, 
         borderRadius: 20,
         alignSelf: 'center', 
-        backgroundColor: 'skyblue'
+        backgroundColor: colors.primaryColor
     }, 
 
     promptButtonContainer:{
         flexDirection:'row',
         alignSelf:'center',
        // alignItems: 'flex-end',
-        marginVertical: 10
+        marginVertical: 10,
+        //borderRadius: 20,
+        //backgroundColor: 'skyblue'
     }, 
 
     centeredView:{
@@ -381,6 +385,17 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems: 'center', 
         backgroundColor: 'yellow'
+    }, 
+
+    individualButton:{
+        width: vw(20),
+        height: vh(5),
+        marginHorizontal: 40, 
+        flexDirection: 'row',
+        justifyContent: 'center', 
+        alignItems: 'center',
+        borderRadius: 20, 
+        backgroundColor: 'skyblue'
     }
 
 })

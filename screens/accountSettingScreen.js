@@ -53,10 +53,11 @@ function AccountSettingScreen({navigation}) {
 
     const ModalInput = ({ onTextChange, onSubmit, visible, value, toggle}) => {
         return(
-            <View style={styles.centeredView}>
-                    <Modal animationType='fade' visible={visible} transparent={true} style={{justifyContent:'center'}}> 
+            //<View style={styles.centeredView}>
+                    <Modal animationType='fade' visible={visible} transparent={true} style={styles.modalContainer}> 
                         <View style={styles.promptContainer}>
                             <Text style={styles.textStyle2}>Edit Username</Text>
+                            <View style={styles.divider2}/>
                             <Text style={styles.textStyle1}>Enter your name below:</Text>
                             <TextInput 
                                 value={value}
@@ -72,7 +73,7 @@ function AccountSettingScreen({navigation}) {
                         </View>
 
                     </Modal>     
-            </View>
+            //</View>
             
         );
     };
@@ -180,7 +181,7 @@ function AccountSettingScreen({navigation}) {
                         value={text}
                         onTextChange={onTextChange}
                         toggle={()=> setVisible(!visible)}
-                        onSubmit={()=>setVisible(!visible)}
+                        onSubmit={(text)=>handleUsernameChange(text)}
                 />
             </View>
 
@@ -323,19 +324,27 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
 
+    divider2: {
+        width: vw(75),
+        marginVertical: 5,
+        borderBottomColor: '#656565',
+        borderBottomWidth: 1,
+    },
+
     promptContainer:{
-        width: vw(65),
-        height: vh(20), 
+        width: vw(85),
+        height: vh(25), 
+        marginTop: vh(45),
         padding: 20, 
         borderRadius: 20,
         alignSelf: 'center', 
-        backgroundColor: colors.color1
+        backgroundColor: 'skyblue'
     }, 
 
     promptButtonContainer:{
         flexDirection:'row',
         alignSelf:'center',
-        alignItems: 'flex-end',
+       // alignItems: 'flex-end',
         marginVertical: 10
     }, 
 
@@ -346,20 +355,32 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         marginTop: 22,
-        backgroundColor: 'yellow'
+        //backgroundColor: 'yellow'
     }, 
 
     textStyle1:{
         fontSize: 13,
-        marginVertical: 3,
+        marginVertical: 10,
     },
 
     textStyle2:{
         flexDirection:'row',
+        alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center',
         fontSize: 18,
         marginVertical: 3,
+       // backgroundColor: 'yellow'
+    }, 
+
+    modalContainer:{
+        width: vw(100),
+        height: vh(100),
+        marginTop: vh(50),
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems: 'center', 
+        backgroundColor: 'yellow'
     }
 
 })

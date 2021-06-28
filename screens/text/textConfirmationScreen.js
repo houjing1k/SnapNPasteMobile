@@ -26,18 +26,26 @@ function TextConfirmationScreen({route, navigation}) {
     const chat = useSelector(state => state.chat);
 
     const pasteButtonAction = () => {
-        sendText(text, chat);
-        Alert.alert(
-            "Paste to PC",
-            "Successfully Pasted to PC",
-            [
-                {
+        if (chat.isSelectedDeviceOnline) {
+            sendText(text, chat);
+            Alert.alert(
+                "Successfully Pasted to PC",
+                "",
+                [{
                     text: "OK", onPress: () => {
                         navigation.navigate('Home');
                     }
-                }
-            ]
-        );
+                }]);
+        } else{
+            Alert.alert(
+                "Saved to history",
+                "",
+                [{
+                    text: "OK", onPress: () => {
+                        navigation.navigate('Home');
+                    }
+                }]);
+        }
         if (!fromHistory) saveToHistory();
     }
     const saveToHistory = async () => {
@@ -49,6 +57,32 @@ function TextConfirmationScreen({route, navigation}) {
         navigation.push('Connections');
     }
 
+    const PasteButton=()=>{
+        if(chat.isSelectedDeviceOnline)
+            return(
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
+                                  onPress={pasteButtonAction}>
+                    <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
+                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Paste to PC</Text>
+                </TouchableOpacity>
+            )
+        else if(!chat.isSelectedDeviceOnline&&fromHistory)
+            return(
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle, {backgroundColor: colors.grey}]}
+                                  disabled={true}>
+                    <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
+                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Not available</Text>
+                </TouchableOpacity>
+            )
+        else if(!chat.isSelectedDeviceOnline&&!fromHistory)
+            return(
+                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
+                                  onPress={pasteButtonAction}>
+                    <MaterialIcon name={'save'} size={30} color={colors.iconLight}/>
+                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Save to History</Text>
+                </TouchableOpacity>
+            )
+    }
 
     return (
         <View style={styles.container}>
@@ -61,7 +95,7 @@ function TextConfirmationScreen({route, navigation}) {
                         fontSize: 20,
                         fontWeight: 'bold',
                         marginLeft: 15
-                    }]}>{chat.selectedDevice}</Text>
+                    }]}>{chat.isSelectedDeviceOnline ? chat.selectedDevice : 'Device not online'}</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.contentContainer}>
@@ -70,11 +104,7 @@ function TextConfirmationScreen({route, navigation}) {
                 </ScrollView>
             </View>
             <View style={styles.bottomContainer}>
-                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
-                                  onPress={pasteButtonAction}>
-                    <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
-                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Paste to PC</Text>
-                </TouchableOpacity>
+                <PasteButton/>
             </View>
 
         </View>

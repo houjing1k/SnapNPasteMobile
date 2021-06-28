@@ -74,12 +74,13 @@ function AccountSettingScreen({navigation}) {
     };
 
     const EditAvatar = () => {
-        Alert.alert(
-            "Edit Avatar",
-            " ",
-            [{text: "Upload"},
-                {text: "Cancel"}]
-        );
+        // Alert.alert(
+        //     "Edit Avatar",
+        //     " ",
+        //     [{text: "Upload"},
+        //         {text: "Cancel"}]
+        // );
+        alert('Feature coming soon!')
     }
 
     const EditName = () => {

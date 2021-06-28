@@ -50,6 +50,7 @@ function ImageEditScreen({route, navigation}) {
 
     const imageWidth = image.width;
     const imageHeight = image.height;
+    const originalBB = [imageWidth, 0, imageWidth, imageHeight, 0, imageHeight, 0, 0,]
 
     useEffect(() => {
     }, [])
@@ -58,31 +59,44 @@ function ImageEditScreen({route, navigation}) {
         navigation.push('ImageConfirmation', {image: {uri: manipulatedImage}, fromHistory: false});
     }
 
+    const comingSoon=()=>alert('Feature coming soon')
+
     const getPerspectiveBB = async () => {
         try {
             const bb = await services.documentDetect(image.uri, account.userToken);
             // console.log(bb);
             // console.log(bb.bb);
-            setPerspectiveBB(bb.bb);
+            let toIntBB=[]
+            bb.forEach(point=>toIntBB.push(Math.trunc(point)))
+            console.log(toIntBB)
+            setPerspectiveBB(toIntBB);
         } catch (e) {
             console.log('Failed')
         }
     }
+    const resetPerspectiveBB = async () => {
+        setPerspectiveBB(originalBB);
+    }
     const applyPerspectiveWarp = async () => {
-        try {
-            console.log(perspectiveBB);
-            if (perspectiveBB.length === 8) {
-                const warpedImage = await services.warpImage(image.uri, perspectiveBB, account.userToken);
-                // let image = new Image();
-                // image.src = 'data:image/png;base64,iVBORw0K...';
-                // document.body.appendChild(image);
-                setManipulatedImage(`data:image/jpg;base64,${warpedImage.image}`)
+        if (JSON.stringify(perspectiveBB) === JSON.stringify(originalBB)) {
+            console.log("No perspective change")
+            setManipulatedImage(image.uri)
+        } else {
+            try {
+                console.log(perspectiveBB);
+                if (perspectiveBB.length === 8) {
+                    const warpedImage = await services.warpImage(image.uri, perspectiveBB, account.userToken);
+                    // let image = new Image();
+                    // image.src = 'data:image/png;base64,iVBORw0K...';
+                    // document.body.appendChild(image);
+                    setManipulatedImage(`data:image/jpg;base64,${warpedImage.image}`)
+                }
+                // console.log(warpedImage);
+                // console.log(bb.bb);
+                // setPerspectiveBB(bb.bb);
+            } catch (e) {
+                console.log('Failed')
             }
-            // console.log(warpedImage);
-            // console.log(bb.bb);
-            // setPerspectiveBB(bb.bb);
-        } catch (e) {
-            console.log('Failed')
         }
         setControlMode(null);
     }
@@ -124,10 +138,10 @@ function ImageEditScreen({route, navigation}) {
                         <TouchableOpacity style={controlStyles.optionButton} onPress={getPerspectiveBB}>
                             <Text>Auto</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={controlStyles.optionButton}>
+                        <TouchableOpacity style={controlStyles.optionButton} onPress={()=>alert("Feature coming soon")}>
                             <Text>Manual</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={controlStyles.optionButton}>
+                        <TouchableOpacity style={controlStyles.optionButton} onPress={resetPerspectiveBB}>
                             <Text>Off</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={controlStyles.optionButton} onPress={applyPerspectiveWarp}>
@@ -138,25 +152,25 @@ function ImageEditScreen({route, navigation}) {
             case 'B&W':
                 return (
                     <View style={controlStyles.controlsBottomContainer}>
-                        <Text>B&W</Text>
+                        <Text>B&W (Coming Soon)</Text>
                     </View>
                 );
             case 'ROTATE':
                 return (
                     <View style={controlStyles.controlsBottomContainer}>
-                        <Text>Rotate</Text>
+                        <Text>Rotate (Coming Soon)</Text>
                     </View>
                 );
             case 'CROP_STRAIGHTEN':
                 return (
                     <View style={controlStyles.controlsBottomContainer}>
-                        <Text>Crop & Straighten</Text>
+                        <Text>Crop & Straighten (Coming Soon)</Text>
                     </View>
                 );
             default:
                 return (
                     <View style={controlStyles.controlsBottomContainer}>
-                        <Text>Nothing Selected</Text>
+                        <Text></Text>
                     </View>
                 );
         }

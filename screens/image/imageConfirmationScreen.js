@@ -17,7 +17,7 @@ import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import {setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
+import {sendText, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
 import * as FileSystem from 'expo-file-system';
 import filenameGenerator from "../../components/filenameGenerator";
 
@@ -36,12 +36,52 @@ function ImageConfirmationScreen({route, navigation}) {
     const [filename, setFilename] = useState(filenameGenerator())
 
     const pasteButtonAction = () => {
+        if (chat.isSelectedDeviceOnline) {
+            // Send Image Function
+            // sendImage(image, chat);
+            Alert.alert(
+                "Feature coming soon",
+                "Your image wont be pasted to PC, but it is saved in your history.",
+                [{
+                    text: "OK", onPress: () => {
+                        navigation.navigate('Home');
+                    }
+                }]);
+        } else{
+            Alert.alert(
+                "Saved to history",
+                "",
+                [{
+                    text: "OK", onPress: () => {
+                        navigation.navigate('Home');
+                    }
+                }]);
+        }
         if (!fromHistory) saveToHistory();
-        navigation.navigate('Home');
     }
     const saveButtonAction = () => {
+        if (chat.isSelectedDeviceOnline) {
+            // Save Image Function
+            // saveImage(image, chat);
+            Alert.alert(
+                "Feature coming soon",
+                "Your image wont be saved to PC, but it is saved in your history.",
+                [{
+                    text: "OK", onPress: () => {
+                        navigation.navigate('Home');
+                    }
+                }]);
+        } else{
+            Alert.alert(
+                "Saved to history",
+                "",
+                [{
+                    text: "OK", onPress: () => {
+                        navigation.navigate('Home');
+                    }
+                }]);
+        }
         if (!fromHistory) saveToHistory();
-        navigation.navigate('Home');
     }
     const saveToHistory = async () => {
         const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
@@ -58,6 +98,46 @@ function ImageConfirmationScreen({route, navigation}) {
         console.log(image);
     }, [])
 
+
+    const PasteContainer=()=>{
+        if(chat.isSelectedDeviceOnline)
+            return(
+                <View style={styles.bottomContainer}>
+                    <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
+                                      onPress={saveButtonAction}>
+                        <MaterialIcon name={'save'} size={30} color={colors.iconLight}/>
+                        <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Save to PC</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
+                                      onPress={pasteButtonAction}>
+                        <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
+                        <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Paste to PC</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        else if(!chat.isSelectedDeviceOnline&&fromHistory)
+            return(
+                <View style={styles.bottomContainer}>
+                    <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle, {backgroundColor:colors.grey}]}
+                                      disabled={true}>
+                        <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
+                        <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Not Available</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        else if(!chat.isSelectedDeviceOnline&&!fromHistory)
+            return(
+                <View style={styles.bottomContainer}>
+                    <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
+                                      onPress={pasteButtonAction}>
+                        <MaterialIcon name={'save'} size={30} color={colors.iconLight}/>
+                        <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Save to History</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+    }
+
+
     return (
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
             <StatusBar/>
@@ -69,7 +149,7 @@ function ImageConfirmationScreen({route, navigation}) {
                         fontSize: 20,
                         fontWeight: 'bold',
                         marginLeft: 15
-                    }]}>{chat.selectedDevice}</Text>
+                    }]}>{chat.isSelectedDeviceOnline ? chat.selectedDevice : 'Device not online'}</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.contentContainer}>
@@ -82,18 +162,7 @@ function ImageConfirmationScreen({route, navigation}) {
                                onChangeText={(text) => setFilename(text)}/>
                 </View>
             </View>
-            <View style={styles.bottomContainer}>
-                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
-                                  onPress={saveButtonAction}>
-                    <MaterialIcon name={'save'} size={30} color={colors.iconLight}/>
-                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Save to PC</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
-                                  onPress={pasteButtonAction}>
-                    <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
-                    <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Paste to PC</Text>
-                </TouchableOpacity>
-            </View>
+            <PasteContainer/>
 
         </KeyboardAvoidingView>
     );

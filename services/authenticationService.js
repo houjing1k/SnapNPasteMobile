@@ -94,27 +94,46 @@ const authenticationService = {
         }
     },
     updateName: async (newName, userToken) => {
-        await axios.patch(
-            URL.me,
-            {
-                username: newName,
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${userToken}`,
+        // await axios.patch(
+        //     URL.me,
+        //     {
+        //         username: newName,
+        //     },
+        //     {
+        //         headers: {
+        //             'Authorization': `Bearer ${userToken}`,
+        //         },
+        //     },
+        // )
+        //     .then((response) => {
+        //         console.log(response);
+        //         console.log('SUCCESS');
+        //         return 'SUCCESS';
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         console.log('FAILED');
+        //         return 'FAILED';
+        //     });
+        try {
+            const response = await axios.patch(
+                URL.me,
+                {
+                    username: newName,
                 },
-            },
-        )
-            .then((response) => {
-                console.log(response);
-                console.log('SUCCESS');
-                return 'SUCCESS';
-            })
-            .catch((error) => {
-                console.log(error);
-                console.log('FAILED');
-                return 'FAILED';
-            });
+                {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                    },
+                },)
+            console.log(response);
+            console.log('SUCCESS');
+            return 'SUCCESS';
+        } catch (error) {
+            console.log(error);
+            console.log('FAILED');
+            return 'FAILED';
+        }
     },
 }
 

@@ -52,7 +52,7 @@ function HomeScreen({navigation}) {
         {
             iconName: 'description',
             text: 'PDF',
-            isLocked: false,
+            isLocked: true,
             onPressAction: () => navigation.push('Snap', {snapMode: 'PDF'}),
         },
         {

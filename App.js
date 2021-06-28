@@ -74,14 +74,23 @@ function Root() {
         },
         updateUsername: async (newUsername, userToken) => {
             try {
-                const res = authenticationService.updateName(newUsername, userToken);
+                const res = await authenticationService.updateName(newUsername, userToken);
                 // console.log('rrrrrrrrrr');
                 if (res === 'SUCCESS') {
                     console.log("Update success");
+                    alert("Update Success!");
                     // add dispatcher method
                 } else alert("Error updating");
             } catch (e) {
                 alert("Error updating");
+            }
+            const info = await authenticationService.getProfile(userToken);
+            if (info != null) {
+                console.log("Profile found:");
+                console.log(info);
+                dispatch(retrieveInfo(info.email, info.username, defaultAvatar, 'FREE'));
+            } else {
+                console.log("Error retrieving profile");
             }
         }
     }), []);

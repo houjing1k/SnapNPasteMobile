@@ -60,7 +60,7 @@ function TextSelectScreen({route, navigation}) {
         let processedText = '';
         // text = ocrResults.map(e => e.text).join(' ');
         // text=ocrResults.join(' ');
-        processedText = selectedText.map(e => ocrResults[e].text).join('\n\n');
+        processedText = selectedText.map(e => ocrResults[e].text).join('\n');
         // console.log(ocrResults);
         console.log('/////////// Selected Text ///////////////');
         console.log(processedText);

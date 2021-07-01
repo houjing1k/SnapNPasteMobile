@@ -37,7 +37,7 @@ function HistoryScreen({navigation}) {
     useEffect(() => {
         (async () => {
             const itemList = await getCloudHistory(account);
-            console.log(itemList);
+            // console.log(itemList);
             // const itemList = await getLocalHistory();
             setHistoryItemList(itemList);
             setIsLoading(false);

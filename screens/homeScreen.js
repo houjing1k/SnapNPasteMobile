@@ -33,7 +33,6 @@ function HomeScreen({navigation}) {
 
     const printAcc = () => {
         // console.log(account);
-        console.log(chat);
     }
 
     const snapItemList = [
@@ -63,7 +62,7 @@ function HomeScreen({navigation}) {
         },
         // {
         //     iconName: 'edit',
-        //     text: 'PRINT ACC',
+        //     text: 'test',
         //     isLocked: false,
         //     onPressAction: printAcc,
         // },

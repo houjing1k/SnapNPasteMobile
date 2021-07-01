@@ -8,7 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
     TextInput,
-    KeyboardAvoidingView, ScrollView, KeyboardAvoidingViewComponent, Keyboard, Image
+    KeyboardAvoidingView, ScrollView, KeyboardAvoidingViewComponent, Keyboard, Image, Platform
 } from 'react-native';
 import colors from "../common/colors";
 

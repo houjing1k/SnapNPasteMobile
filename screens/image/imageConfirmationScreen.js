@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     ScrollView,
     KeyboardAvoidingView,
-    Alert, Image, Dimensions, TextInput
+    Alert, Image, Dimensions, TextInput, ToastAndroid, Platform
 } from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
@@ -35,51 +35,87 @@ function ImageConfirmationScreen({route, navigation}) {
     const account = useSelector(state => state.account);
     const [filename, setFilename] = useState(filenameGenerator())
 
-    const pasteButtonAction = () => {
+    const pasteButtonAction = async () => {
         if (chat.isSelectedDeviceOnline) {
             // Send Image Function
             // sendImage(image, chat);
-            Alert.alert(
-                "Feature coming soon",
-                "Your image wont be pasted to PC, but it is saved in your history.",
-                [{
-                    text: "OK", onPress: () => {
-                        navigation.navigate('Home');
-                    }
-                }]);
+
+            const header = 'mode:image/paste;'
+            if(fromHistory)sendText(header.concat(image.uri), chat);
+            else{
+                const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
+                sendText(header.concat(base64), chat);
+            }
+
+            if(Platform.OS==="ios") {
+                Alert.alert(
+                    "Image Pasted to PC!",
+                    "",
+                    [{
+                        text: "OK", onPress: () => {
+                            navigation.navigate('Home');
+                        }
+                    }])
+            }else{
+                ToastAndroid.show('Image Pasted to PC!', ToastAndroid.SHORT);
+                navigation.navigate('Home');
+            }
         } else{
-            Alert.alert(
-                "Saved to history",
-                "",
-                [{
-                    text: "OK", onPress: () => {
-                        navigation.navigate('Home');
-                    }
-                }]);
+            if(Platform.OS==="ios") {
+                Alert.alert(
+                    "Saved to history",
+                    "",
+                    [{
+                        text: "OK", onPress: () => {
+                            navigation.navigate('Home');
+                        }
+                    }])
+            }else{
+                ToastAndroid.show('Saved to history', ToastAndroid.SHORT);
+                navigation.navigate('Home');
+            }
         }
         if (!fromHistory) saveToHistory();
     }
-    const saveButtonAction = () => {
+    const saveButtonAction = async () => {
         if (chat.isSelectedDeviceOnline) {
             // Save Image Function
             // saveImage(image, chat);
-            Alert.alert(
-                "Feature coming soon",
-                "Your image wont be saved to PC, but it is saved in your history.",
-                [{
-                    text: "OK", onPress: () => {
-                        navigation.navigate('Home');
-                    }
-                }]);
+            const header = 'mode:image/save/'+filename+';'
+            if(fromHistory)sendText(header.concat(image.uri), chat);
+            else{
+                const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
+                sendText(header.concat(base64), chat);
+            }
+
+            if(Platform.OS==="ios") {
+                Alert.alert(
+                    "Image Saved to PC!",
+                    "",
+                    [{
+                        text: "OK", onPress: () => {
+                            navigation.navigate('Home');
+                        }
+                    }])
+            }else{
+                ToastAndroid.show('Image Saved to PC!', ToastAndroid.SHORT);
+                navigation.navigate('Home');
+            }
+
         } else{
-            Alert.alert(
-                "Saved to history",
-                "",
-                [{
-                    text: "OK", onPress: () => {
-                        navigation.navigate('Home');
-                    }
-                }]);
+            if(Platform.OS==="ios") {
+                Alert.alert(
+                    "Saved to history",
+                    "",
+                    [{
+                        text: "OK", onPress: () => {
+                            navigation.navigate('Home');
+                        }
+                    }])
+            }else{
+                ToastAndroid.show('Saved to history', ToastAndroid.SHORT);
+                navigation.navigate('Home');
+            }
         }
         if (!fromHistory) saveToHistory();
     }

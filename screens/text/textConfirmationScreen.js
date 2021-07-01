@@ -8,7 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
     ScrollView,
-    Alert
+    Alert, ToastAndroid, Platform
 } from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
@@ -18,6 +18,7 @@ import {useSelector} from "react-redux";
 import {sendText, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import services from "../../services/services";
+import * as FileSystem from "expo-file-system";
 
 function TextConfirmationScreen({route, navigation}) {
 
@@ -25,26 +26,37 @@ function TextConfirmationScreen({route, navigation}) {
     const {text, fromHistory} = route.params;
     const chat = useSelector(state => state.chat);
 
-    const pasteButtonAction = () => {
+    const pasteButtonAction = async() => {
         if (chat.isSelectedDeviceOnline) {
             sendText(text, chat);
-            Alert.alert(
-                "Successfully Pasted to PC",
-                "",
-                [{
-                    text: "OK", onPress: () => {
-                        navigation.navigate('Home');
-                    }
-                }]);
+
+            if(Platform.OS==="ios") {
+                Alert.alert(
+                    "Text Pasted to PC!",
+                    "",
+                    [{
+                        text: "OK", onPress: () => {
+                            navigation.navigate('Home');
+                        }
+                    }])
+            }else{
+                ToastAndroid.show('Text Pasted to PC!', ToastAndroid.SHORT);
+                navigation.navigate('Home');
+            }
         } else{
-            Alert.alert(
-                "Saved to history",
-                "",
-                [{
-                    text: "OK", onPress: () => {
-                        navigation.navigate('Home');
-                    }
-                }]);
+            if(Platform.OS==="ios") {
+                Alert.alert(
+                    "Saved to history",
+                    "",
+                    [{
+                        text: "OK", onPress: () => {
+                            navigation.navigate('Home');
+                        }
+                    }])
+            }else{
+                ToastAndroid.show('Saved to history', ToastAndroid.SHORT);
+                navigation.navigate('Home');
+            }
         }
         if (!fromHistory) saveToHistory();
     }

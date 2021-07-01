@@ -74,7 +74,7 @@ export const sendText = async (message, chat) => {
     } else {
         console.log(chat);
         console.log('recipient: ' + chat.selectedDevice);
-        console.log('message: ' + message);
+        console.log('message: ' + message.substring(0,300));
         await socket.emit("transfer", chat.selectedDevice, message, "text");
     }
 };

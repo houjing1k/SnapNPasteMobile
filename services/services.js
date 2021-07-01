@@ -103,8 +103,8 @@ const services = {
         let uploadResult;
         try {
             uploadResult = await (await postMultipart(URL.warp_image, formData, userToken)).json();
-            console.log('results: ');
-            console.log({uploadResult});
+            // console.log('results: ');
+            // console.log({uploadResult});
             if (uploadResult.detail === 'Unauthorized') {
                 console.log('Unauthorized');
                 alert("Error: Unauthorised");

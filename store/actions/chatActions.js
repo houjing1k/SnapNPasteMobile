@@ -67,7 +67,7 @@ export const selectDevice = async (dispatch, deviceName) => {
     await AsyncStorage.setItem('lastSelectedDevice', deviceName);
 }
 
-export const sendText = async (message, chat) => {
+export const sendDataToPC = async (message, chat) => {
     console.log("------SEND TEXT---------")
     if (chat.selectedDevice == null) {
         console.log('No Device Selected!');

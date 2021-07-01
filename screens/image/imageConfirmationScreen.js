@@ -17,7 +17,7 @@ import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import {sendText, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
+import {sendDataToPC, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
 import * as FileSystem from 'expo-file-system';
 import filenameGenerator from "../../components/filenameGenerator";
 
@@ -41,13 +41,9 @@ function ImageConfirmationScreen({route, navigation}) {
             // sendImage(image, chat);
 
             const header = 'mode:image/paste;'
-            if(fromHistory)sendText(header.concat(image.uri), chat);
-            else{
-                const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
-                sendText(header.concat(base64), chat);
-            }
+            sendDataToPC(header.concat(image.uri), chat);
 
-            if(Platform.OS==="ios") {
+            if (Platform.OS === "ios") {
                 Alert.alert(
                     "Image Pasted to PC!",
                     "",
@@ -56,12 +52,12 @@ function ImageConfirmationScreen({route, navigation}) {
                             navigation.navigate('Home');
                         }
                     }])
-            }else{
+            } else {
                 ToastAndroid.show('Image Pasted to PC!', ToastAndroid.SHORT);
                 navigation.navigate('Home');
             }
-        } else{
-            if(Platform.OS==="ios") {
+        } else {
+            if (Platform.OS === "ios") {
                 Alert.alert(
                     "Saved to history",
                     "",
@@ -70,7 +66,7 @@ function ImageConfirmationScreen({route, navigation}) {
                             navigation.navigate('Home');
                         }
                     }])
-            }else{
+            } else {
                 ToastAndroid.show('Saved to history', ToastAndroid.SHORT);
                 navigation.navigate('Home');
             }
@@ -81,14 +77,10 @@ function ImageConfirmationScreen({route, navigation}) {
         if (chat.isSelectedDeviceOnline) {
             // Save Image Function
             // saveImage(image, chat);
-            const header = 'mode:image/save/'+filename+';'
-            if(fromHistory)sendText(header.concat(image.uri), chat);
-            else{
-                const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
-                sendText(header.concat(base64), chat);
-            }
+            const header = 'mode:image/save/' + filename + ';'
+            sendDataToPC(header.concat(image.uri), chat);
 
-            if(Platform.OS==="ios") {
+            if (Platform.OS === "ios") {
                 Alert.alert(
                     "Image Saved to PC!",
                     "",
@@ -97,13 +89,13 @@ function ImageConfirmationScreen({route, navigation}) {
                             navigation.navigate('Home');
                         }
                     }])
-            }else{
+            } else {
                 ToastAndroid.show('Image Saved to PC!', ToastAndroid.SHORT);
                 navigation.navigate('Home');
             }
 
-        } else{
-            if(Platform.OS==="ios") {
+        } else {
+            if (Platform.OS === "ios") {
                 Alert.alert(
                     "Saved to history",
                     "",
@@ -112,7 +104,7 @@ function ImageConfirmationScreen({route, navigation}) {
                             navigation.navigate('Home');
                         }
                     }])
-            }else{
+            } else {
                 ToastAndroid.show('Saved to history', ToastAndroid.SHORT);
                 navigation.navigate('Home');
             }
@@ -120,10 +112,10 @@ function ImageConfirmationScreen({route, navigation}) {
         if (!fromHistory) saveToHistory();
     }
     const saveToHistory = async () => {
-        const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
+        // const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
         // console.log(base64);
         // setLocalHistory('IMAGE', JSON.stringify(image));
-        setCloudHistory('IMAGE', base64, account);
+        setCloudHistory('IMAGE', image.uri, account);
     }
 
     const selectDevice = () => {
@@ -131,13 +123,14 @@ function ImageConfirmationScreen({route, navigation}) {
     }
 
     useEffect(() => {
-        console.log(image);
+        console.log('FINAL IMAGE URI')
+        console.log(image.uri.substring(0, 100));
     }, [])
 
 
-    const PasteContainer=()=>{
-        if(chat.isSelectedDeviceOnline)
-            return(
+    const PasteContainer = () => {
+        if (chat.isSelectedDeviceOnline)
+            return (
                 <View style={styles.bottomContainer}>
                     <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
                                       onPress={saveButtonAction}>
@@ -151,18 +144,19 @@ function ImageConfirmationScreen({route, navigation}) {
                     </TouchableOpacity>
                 </View>
             )
-        else if(!chat.isSelectedDeviceOnline&&fromHistory)
-            return(
+        else if (!chat.isSelectedDeviceOnline && fromHistory)
+            return (
                 <View style={styles.bottomContainer}>
-                    <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle, {backgroundColor:colors.grey}]}
-                                      disabled={true}>
+                    <TouchableOpacity
+                        style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle, {backgroundColor: colors.grey}]}
+                        disabled={true}>
                         <MaterialIcon name={'content-paste'} size={30} color={colors.iconLight}/>
                         <Text style={[commonStyle.commonTextStyleLight, {marginLeft: 15}]}>Not Available</Text>
                     </TouchableOpacity>
                 </View>
             )
-        else if(!chat.isSelectedDeviceOnline&&!fromHistory)
-            return(
+        else if (!chat.isSelectedDeviceOnline && !fromHistory)
+            return (
                 <View style={styles.bottomContainer}>
                     <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, styles.buttonStyle]}
                                       onPress={pasteButtonAction}>
@@ -175,7 +169,7 @@ function ImageConfirmationScreen({route, navigation}) {
 
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <StatusBar/>
             <Header navigation={navigation} text={'Preview Image'} backEnabled={true} cancelEnabled={true}/>
             <View style={styles.selectDeviceContainer}>

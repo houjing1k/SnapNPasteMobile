@@ -119,11 +119,11 @@ function HistoryScreen({navigation}) {
                                 onPress={async() => {
                                     navigation.push('ImageConfirmation', {
                                     // image: await base64ToImage(item.content),
-                                    image: {uri:`data:image/jpeg;base64,${item.content}`},
+                                    image: {uri:`${item.content}`},
                                     fromHistory: true
                                 })}}>
                                 <View>
-                                    <Image source={{uri:`data:image/jpeg;base64,${item.content}`}} style={historyItemStyles.historyImage}/>
+                                    <Image source={{uri:`${item.content}`}} style={historyItemStyles.historyImage}/>
                                 </View>
                             </TouchableOpacity>
                         </View>

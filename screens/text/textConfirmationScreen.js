@@ -15,7 +15,7 @@ import colors from "../../common/colors";
 import commonStyle from "../../common/commonStyles";
 import {vw} from "react-native-expo-viewport-units";
 import {useSelector} from "react-redux";
-import {sendText, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
+import {sendDataToPC, setCloudHistory, setLocalHistory} from "../../store/actions/chatActions";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import services from "../../services/services";
 import * as FileSystem from "expo-file-system";
@@ -28,7 +28,7 @@ function TextConfirmationScreen({route, navigation}) {
 
     const pasteButtonAction = async() => {
         if (chat.isSelectedDeviceOnline) {
-            sendText(text, chat);
+            sendDataToPC(text, chat);
 
             if(Platform.OS==="ios") {
                 Alert.alert(

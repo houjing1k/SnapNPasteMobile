@@ -37,7 +37,7 @@ function ImageEditScreen({route, navigation}) {
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [manipulatedImage, setManipulatedImage] = useState(image.uri);
+    const [manipulatedImage, setManipulatedImage] = useState(image);
     const [perspectiveBB, setPerspectiveBB] = useState([]);
     const [controlMode, setControlMode] = useState(null);
     const [perspectiveMode, setPerspectiveMode] = useState('AUTO');
@@ -56,14 +56,15 @@ function ImageEditScreen({route, navigation}) {
     }, [])
 
     const previewButtonAction = () => {
-        navigation.push('ImageConfirmation', {image: {uri: manipulatedImage}, fromHistory: false});
+        navigation.push('ImageConfirmation', {image: manipulatedImage, fromHistory: false});
     }
 
     const comingSoon=()=>alert('Feature coming soon')
 
     const getPerspectiveBB = async () => {
         try {
-            const bb = await services.documentDetect(image.uri, account.userToken);
+            const jpegImage = await base64ToJpeg(image);
+            const bb = await services.documentDetect(jpegImage.uri, account.userToken);
             // console.log(bb);
             // console.log(bb.bb);
             let toIntBB=[]
@@ -80,18 +81,19 @@ function ImageEditScreen({route, navigation}) {
     const applyPerspectiveWarp = async () => {
         if (JSON.stringify(perspectiveBB) === JSON.stringify(originalBB)) {
             console.log("No perspective change")
-            setManipulatedImage(image.uri)
+            setManipulatedImage(image)
         } else {
             try {
                 console.log(perspectiveBB);
                 if (perspectiveBB.length === 8) {
-                    const warpedImage = await services.warpImage(image.uri, perspectiveBB, account.userToken);
+                    const jpegImage = await base64ToJpeg(image)
+                    const warpedImage = await services.warpImage(jpegImage.uri, perspectiveBB, account.userToken);
                     // let image = new Image();
                     // image.src = 'data:image/png;base64,iVBORw0K...';
                     // document.body.appendChild(image);
-                    setManipulatedImage(`data:image/jpg;base64,${warpedImage.image}`)
+                    // console.log(warpedImage.image.substring(0,100));
+                    setManipulatedImage({uri:`data:image/jpg;base64,${warpedImage.image}`})
                 }
-                // console.log(warpedImage);
                 // console.log(bb.bb);
                 // setPerspectiveBB(bb.bb);
             } catch (e) {
@@ -100,10 +102,18 @@ function ImageEditScreen({route, navigation}) {
         }
         setControlMode(null);
     }
+    const base64ToJpeg = async (base64Image) => {
+        const jpegImage = await ImageManipulator.manipulateAsync(
+            base64Image.uri, [], {format: 'jpeg'},);
+        return jpegImage;
+    }
 
     useEffect(() => {
 
     }, [perspectiveMode])
+    useEffect(() => {
+        console.log(manipulatedImage.uri.substring(0,100))
+    }, [manipulatedImage])
 
 
     const ImageControlPanel = () => {
@@ -179,7 +189,7 @@ function ImageEditScreen({route, navigation}) {
     return (
         <View style={styles.container}>
             <StatusBar/>
-            <Header navigation={navigation} text={'Edit PDF'} backEnabled={true} cancelEnabled={true}/>
+            <Header navigation={navigation} text={'Edit Image'} backEnabled={true} cancelEnabled={true}/>
             {isLoading ? <Loading text={'Loading'}/> :
                 <View style={styles.container}>
                     <View style={[styles.contentContainer]}>
@@ -187,7 +197,7 @@ function ImageEditScreen({route, navigation}) {
                             <Svg height={imageFrameDimension().maxHeight} width={imageFrameDimension().maxWidth}
                                  viewBox={"0 0 " + imageWidth + " " + imageHeight}>
                                 <Image width={imageWidth} height={imageHeight}
-                                       href={controlMode === 'PERSPECTIVE' ? image.uri : manipulatedImage}/>
+                                       href={controlMode === 'PERSPECTIVE' ? image.uri : manipulatedImage.uri}/>
                                 {
                                     (controlMode === 'PERSPECTIVE' && perspectiveBB.length === 8) ?
                                         <PerspectiveBoundingBox bb={perspectiveBB}/>

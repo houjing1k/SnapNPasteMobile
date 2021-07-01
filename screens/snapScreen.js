@@ -19,8 +19,7 @@ const imageFrameDimension = () => {
     if ((maxHeight / maxWidth) < imageRatio) {
         maxWidth = maxHeight / imageRatio;
         // console.log('ipad')
-    }
-    else {
+    } else {
         maxHeight = maxWidth * imageRatio;
         // console.log('phone')
     }
@@ -65,7 +64,7 @@ function SnapScreen({route, navigation}) {
             base64: true
         });
 
-        console.log(result);
+        // console.log(result);
 
         if (!result.cancelled) {
             image = result;
@@ -165,15 +164,23 @@ function SnapScreen({route, navigation}) {
                 break;
             case 'Image':
                 console.log('Go to Image Edit');
-                navigation.push('ImageEdit', {image: await resizeImage(1200, 0.8, image)});
+                navigation.push('ImageEdit', {image: await toBase64Image(await resizeImage(1200, 0.8, image))});
                 break;
             case 'PDF':
                 console.log('Go to PDF Edit');
-                navigation.push('PdfEdit', {image: await resizeImage(1200, 0.7, image)});
+                navigation.push('PdfEdit', {image: await toBase64Image(await resizeImage(1200, 0.8, image))});
                 break;
             default:
                 console.log('No mode selected!');
         }
+    }
+
+    const toBase64Image = async (image) => {
+        const base64 = await FileSystem.readAsStringAsync(image.uri, {encoding: 'base64'});
+        let base64Image = image;
+        base64Image.uri = `data:image/jpg;base64,${base64}`;
+        console.log(base64Image.uri.substring(0, 100))
+        return base64Image;
     }
 
     const resizeImage = async (width, compression, image) => {

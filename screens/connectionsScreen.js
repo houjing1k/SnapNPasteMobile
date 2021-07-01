@@ -5,7 +5,7 @@ import colors from "../common/colors";
 import commonStyle from "../common/commonStyles";
 import {vw} from 'react-native-expo-viewport-units';
 import {useDispatch, useSelector} from "react-redux";
-import {selectDevice, sendText} from "../store/actions/chatActions";
+import {selectDevice, sendDataToPC} from "../store/actions/chatActions";
 
 
 function ConnectionsScreen({navigation}) {
@@ -16,7 +16,7 @@ function ConnectionsScreen({navigation}) {
 
     const button2Action = () => {
         // navigation.navigate('Signup');
-        sendText('Hello', chat);
+        sendDataToPC('Hello', chat);
     }
     const selectDeviceAction = (deviceName) => {
         selectDevice(dispatch, deviceName);

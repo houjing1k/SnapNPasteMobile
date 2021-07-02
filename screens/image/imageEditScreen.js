@@ -53,7 +53,7 @@ function ImageEditScreen({route, navigation}) {
     const originalBB = [imageWidth, 0, imageWidth, imageHeight, 0, imageHeight, 0, 0,]
 
     useEffect(() => {
-    }, [])
+    }, [controlState])
 
     const previewButtonAction = () => {
         navigation.push('ImageConfirmation', {image: manipulatedImage, fromHistory: false});
@@ -88,14 +88,8 @@ function ImageEditScreen({route, navigation}) {
                 if (perspectiveBB.length === 8) {
                     const jpegImage = await base64ToJpeg(image)
                     const warpedImage = await services.warpImage(jpegImage.uri, perspectiveBB, account.userToken);
-                    // let image = new Image();
-                    // image.src = 'data:image/png;base64,iVBORw0K...';
-                    // document.body.appendChild(image);
-                    // console.log(warpedImage.image.substring(0,100));
                     setManipulatedImage({uri:`data:image/jpg;base64,${warpedImage.image}`})
                 }
-                // console.log(bb.bb);
-                // setPerspectiveBB(bb.bb);
             } catch (e) {
                 console.log('Failed')
             }

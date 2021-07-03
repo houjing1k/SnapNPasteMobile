@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     Alert,
     KeyboardAvoidingView,
-    TextInput, ScrollView
+    TextInput, ScrollView, Platform
 } from 'react-native';
 import Header from "../components/header";
 import colors from "../common/colors";
@@ -115,51 +115,53 @@ function SignupScreen({navigation}) {
     }, [data])
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
-            <StatusBar/>
-            <Header navigation={navigation} text={"Sign Up"} backEnabled={true} cancelEnabled={false}/>
+        <SafeAreaView>
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
+                <StatusBar/>
+                <Header navigation={navigation} text={"Sign Up"} backEnabled={true} cancelEnabled={false}/>
 
-            <ScrollView contentContainerStyle={styles.contentContainer}>
-                <View style={styles.inputContainer}>
-                    <View style={styles.inputSetContainer}>
-                        <Icon name="envelope" size={35} style={styles.inputIcon}/>
-                        <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Email"}
-                                       onChangeText={(val) => handleEmailChange(val)}/>
-                        </View>
-                    </View>
-                    <View style={styles.inputSetContainer}>
-                        <MaterialIcon name="face" size={35} style={styles.inputIcon}/>
-                        <View style={styles.inputFieldContainer}>
-                            <TextInput style={styles.input} placeholder={"Name"}
-                                       onChangeText={(val) => handleNameChange(val)}/>
-                        </View>
-                    </View>
-                    <View style={styles.inputSetContainer}>
-                        <MaterialIcon name="lock" size={35} style={styles.inputIcon}/>
-                        <View style={styles.doubleInputContainer}>
+                <ScrollView contentContainerStyle={styles.contentContainer}>
+                    <View style={styles.inputContainer}>
+                        <View style={styles.inputSetContainer}>
+                            <Icon name="envelope" size={35} style={styles.inputIcon}/>
                             <View style={styles.inputFieldContainer}>
-                                <TextInput style={styles.input} placeholder={"Password"}
-                                           onChangeText={(val) => handlePasswordChange(val)}
-                                           secureTextEntry={true}/>
-                            </View>
-                            <View style={styles.inputFieldContainer}>
-                                <TextInput style={styles.input} placeholder={"Re-enter Password"}
-                                           onChangeText={(val) => handlePasswordCheckChange(val)}
-                                           secureTextEntry={true}/>
+                                <TextInput style={styles.input} placeholder={"Email"}
+                                           onChangeText={(val) => handleEmailChange(val)}/>
                             </View>
                         </View>
+                        <View style={styles.inputSetContainer}>
+                            <MaterialIcon name="face" size={35} style={styles.inputIcon}/>
+                            <View style={styles.inputFieldContainer}>
+                                <TextInput style={styles.input} placeholder={"Name"}
+                                           onChangeText={(val) => handleNameChange(val)}/>
+                            </View>
+                        </View>
+                        <View style={styles.inputSetContainer}>
+                            <MaterialIcon name="lock" size={35} style={styles.inputIcon}/>
+                            <View style={styles.doubleInputContainer}>
+                                <View style={styles.inputFieldContainer}>
+                                    <TextInput style={styles.input} placeholder={"Password"}
+                                               onChangeText={(val) => handlePasswordChange(val)}
+                                               secureTextEntry={true}/>
+                                </View>
+                                <View style={styles.inputFieldContainer}>
+                                    <TextInput style={styles.input} placeholder={"Re-enter Password"}
+                                               onChangeText={(val) => handlePasswordCheckChange(val)}
+                                               secureTextEntry={true}/>
+                                </View>
+                            </View>
+                        </View>
                     </View>
+                </ScrollView>
+
+                <View style={styles.bottomContainer}>
+                    <TouchableOpacity style={commonStyle.buttonSingle} onPress={register}>
+                        <Text style={commonStyle.commonTextStyleLight}>Create Account</Text>
+                    </TouchableOpacity>
                 </View>
-            </ScrollView>
 
-            <View style={styles.bottomContainer}>
-                <TouchableOpacity style={commonStyle.buttonSingle} onPress={register}>
-                    <Text style={commonStyle.commonTextStyleLight}>Create Account</Text>
-                </TouchableOpacity>
-            </View>
-
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 

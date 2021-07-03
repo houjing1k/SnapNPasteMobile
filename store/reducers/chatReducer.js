@@ -1,4 +1,4 @@
-import {INITIALISE, SELECT_DEVICE, SEND_TEXT, UPDATE_DEVICE_LIST} from "../actions/types";
+import {INITIALISE, LOGOUT_DEVICE, SELECT_DEVICE, SEND_TEXT, UPDATE_DEVICE_LIST} from "../actions/types";
 
 
 const initialState = {
@@ -41,6 +41,15 @@ const chatReducer = (state = initialState, action) => {
                 ...state,
                 selectedDevice: action.selectedDevice,
                 isSelectedDeviceOnline: (state.deviceList.indexOf(action.selectedDevice) !== -1),
+            }
+        case LOGOUT_DEVICE:
+            return {
+                activeUser: null,
+                activeDevice: null,
+                isInitialised: false,
+                deviceList: [],
+                selectedDevice: null,
+                isSelectedDeviceOnline: false,
             }
         default:
             return state;

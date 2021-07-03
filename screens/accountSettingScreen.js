@@ -9,8 +9,8 @@ import {
     TouchableOpacity,
     Alert,
     flexDirection,
-    Image, 
-    Modal, 
+    Image,
+    Modal,
     TextInput
 } from 'react-native';
 import Header from "../components/header";
@@ -42,19 +42,19 @@ function AccountSettingScreen({navigation}) {
     const submitUsernameChange = () => {
         console.log(newUsername)
         updateUsername(newUsername, account.userToken);
-        
+
     }
 
 
     const ModalInput = ({ onTextChange, onSubmit, visible, value, toggle}) => {
         return(
             //<View style={styles.centeredView}>
-                    <Modal animationType='fade' visible={visible} transparent={true} style={styles.modalContainer}> 
+                    <Modal animationType='fade' visible={visible} transparent={true} style={styles.modalContainer}>
                         <View style={styles.promptContainer}>
                             <Text style={styles.textStyle2}>Edit Username</Text>
                             <View style={styles.divider2}/>
                             <Text style={styles.textStyle1}>Enter your name below:</Text>
-                            <TextInput 
+                            <TextInput
                                 value={value}
                                 onChangeText= {onTextChange}
                                 placeholder={'Name'}
@@ -67,9 +67,9 @@ function AccountSettingScreen({navigation}) {
 
                         </View>
 
-                    </Modal>     
+                    </Modal>
             //</View>
-            
+
         );
     };
 
@@ -141,7 +141,7 @@ function AccountSettingScreen({navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Account Settings'} backEnabled={true}/>
 
@@ -150,19 +150,19 @@ function AccountSettingScreen({navigation}) {
                 <View style={styles.divider}/>
                 <UsernameDetails/>
                 <View style={styles.divider}/>
-                <Modal animationType='fade' visible={visible} transparent={true} style={styles.modalContainer}> 
+                <Modal animationType='fade' visible={visible} transparent={true} style={styles.modalContainer}>
                         <View style={styles.promptContainer}>
                             <Text style={styles.textStyle2}>Edit Username</Text>
                             <View style={styles.divider2}/>
                             <Text style={styles.textStyle1}>Enter your name below:</Text>
-                            <TextInput 
-                                
+                            <TextInput
+
                                 onChangeText= {(text)=>setNewUsername(text)}
                                 placeholder={'Enter Name'}
                             />
 
                             <View style={styles.promptButtonContainer}>
-                                
+
                                 <View style={styles.individualButton}>
                                     <TouchableOpacity onPress={ ()=>
                                         {setVisible(false);
@@ -171,21 +171,21 @@ function AccountSettingScreen({navigation}) {
 
                                     </TouchableOpacity>
                                 </View>
-                                
+
                                 <View style={styles.individualButton}>
                                     <TouchableOpacity onPress={()=>setVisible(false)}>
                                         <Text style={commonStyle.commonTextStyleDark}>Cancel</Text>
                                     </TouchableOpacity>
                                 </View>
-                                
-                                    
-                                
-                                
+
+
+
+
                             </View>
 
                         </View>
 
-                    </Modal>  
+                    </Modal>
             </View>
 
             {/*<View style={styles.bottomContainer}>*/}
@@ -197,7 +197,7 @@ function AccountSettingScreen({navigation}) {
             {/*    </TouchableOpacity>*/}
             {/*</View>*/}
 
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -336,13 +336,13 @@ const styles = StyleSheet.create({
 
     promptContainer:{
         width: vw(85),
-        height: vh(25), 
+        height: vh(25),
         marginTop: vh(45),
-        padding: 20, 
+        padding: 20,
         borderRadius: 20,
-        alignSelf: 'center', 
+        alignSelf: 'center',
         backgroundColor: colors.primaryColor
-    }, 
+    },
 
     promptButtonContainer:{
         flexDirection:'row',
@@ -351,17 +351,17 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         //borderRadius: 20,
         //backgroundColor: 'skyblue'
-    }, 
+    },
 
     centeredView:{
         //width: vw(85),
-        //height: vh(40), 
+        //height: vh(40),
         flex:1,
         justifyContent:'center',
         alignItems:'center',
         marginTop: 22,
         //backgroundColor: 'yellow'
-    }, 
+    },
 
     textStyle1:{
         fontSize: 13,
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginVertical: 3,
        // backgroundColor: 'yellow'
-    }, 
+    },
 
     modalContainer:{
         width: vw(100),
@@ -384,18 +384,18 @@ const styles = StyleSheet.create({
         marginTop: vh(50),
         flexDirection:'row',
         justifyContent:'center',
-        alignItems: 'center', 
+        alignItems: 'center',
         backgroundColor: 'yellow'
-    }, 
+    },
 
     individualButton:{
         width: vw(20),
         height: vh(5),
-        marginHorizontal: 40, 
+        marginHorizontal: 40,
         flexDirection: 'row',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 20, 
+        borderRadius: 20,
         backgroundColor: 'skyblue'
     }
 

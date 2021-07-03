@@ -22,10 +22,11 @@ import {addAll, removeAll} from "../../store/actions/textSelectActions";
 import authenticationService from "../../services/authenticationService";
 import services from "../../services/services";
 import Loading from "../../components/Loading";
+import Constants from "expo-constants";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
-    let maxHeight = Dimensions.get('window').height - 70 - 170;
+    let maxHeight = Dimensions.get('window').height - (Constants.statusBarHeight+20) - 70 - 170;
     // console.log(maxWidth + " " + maxHeight)
     return {maxWidth, maxHeight};
 }
@@ -90,7 +91,7 @@ function TextSelectScreen({route, navigation}) {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Select Text'} backEnabled={true} cancelEnabled={true}/>
             {isLoading ? <Loading text={'Fetching OCR Results'}/> :
@@ -137,7 +138,7 @@ function TextSelectScreen({route, navigation}) {
                     </View>
                 </View>
             }
-        </View>
+        </SafeAreaView>
     );
 
 }

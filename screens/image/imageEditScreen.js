@@ -8,7 +8,7 @@ import {
     StatusBar,
     TouchableOpacity,
 
-    ActivityIndicator, ImageBackground, Dimensions
+    ActivityIndicator, ImageBackground, Dimensions, Platform
 } from 'react-native';
 import Header from "../../components/header";
 import colors from "../../common/colors";
@@ -23,56 +23,82 @@ import services from "../../services/services";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import PerspectiveBoundingBox from "../../components/perspectiveBoundingBox";
 import Loading from "../../components/Loading";
+import Constants from "expo-constants";
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import base64 from 'react-native-base64'
+import {Buffer} from "buffer";
+// import RNFS from 'react-native-fs';
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
-    let maxHeight = Dimensions.get('window').height - 70 - 100 - 120;
+    let maxHeight = Dimensions.get('window').height - (Constants.statusBarHeight + 20) - 70 - 100 - 120;
     // console.log(maxWidth + " " + maxHeight)
     return {maxWidth, maxHeight};
 }
 
 function ImageEditScreen({route, navigation}) {
     const {image} = route.params;
-
     const dispatch = useDispatch();
+    const account = useSelector(state => state.account);
+    const imageWidth = image.width;
+    const imageHeight = image.height;
+    const originalBB = [imageWidth, 0, imageWidth, imageHeight, 0, imageHeight, 0, 0,];
+    const originalCrop = [0, 0, imageWidth, imageHeight]; //{ originX, originY, width, height }
 
     const [isLoading, setIsLoading] = useState(false);
     const [manipulatedImage, setManipulatedImage] = useState(image);
+    const [perspectiveImage, setPerspectiveImage] = useState(image);
     const [perspectiveBB, setPerspectiveBB] = useState([]);
     const [controlMode, setControlMode] = useState(null);
     const [perspectiveMode, setPerspectiveMode] = useState('AUTO');
     const [controlState, setControlState] = useState({
-        perspective: false,
         rotate: 0,
+        bnw: false,
+        crop: originalCrop,
     })
 
-    const account = useSelector(state => state.account);
-
-    const imageWidth = image.width;
-    const imageHeight = image.height;
-    const originalBB = [imageWidth, 0, imageWidth, imageHeight, 0, imageHeight, 0, 0,]
 
     useEffect(() => {
-    }, [controlState])
+        // console.log('controlState')
+        // console.log(controlState)
+        if (Platform.OS !== 'ios') renderPreviewImage();
+    }, [controlState, perspectiveImage])
+
+    const renderPreviewImage = async () => {
+        let tempImage = perspectiveImage
+        // console.log(tempImage.uri);
+        tempImage = await ImageManipulator.manipulateAsync(
+            tempImage.uri, [{rotate: 90 * controlState.rotate}], {base64: true},);
+        // console.log(tempImage.uri);
+        // tempImage.uri = 'data:image/jpg;base64,' + rotatedImage.base64;
+        setManipulatedImage({...image, uri: 'data:image/jpg;base64,' + tempImage.base64});
+    }
 
     const previewButtonAction = () => {
         navigation.push('ImageConfirmation', {image: manipulatedImage, fromHistory: false});
     }
 
-    const comingSoon=()=>alert('Feature coming soon')
+    const comingSoon = () => alert('Feature coming soon')
 
     const getPerspectiveBB = async () => {
         try {
+            console.log('1');
+            // const jpegImage = await base64ToJpeg2(image);
             const jpegImage = await base64ToJpeg(image);
+            console.log('2');
             const bb = await services.documentDetect(jpegImage.uri, account.userToken);
+            // const bb = await services.documentDetect(image.uri, account.userToken);
+            // const bb =[];
             // console.log(bb);
             // console.log(bb.bb);
-            let toIntBB=[]
-            bb.forEach(point=>toIntBB.push(Math.trunc(point)))
+            let toIntBB = []
+            bb.forEach(point => toIntBB.push(Math.trunc(point)))
             console.log(toIntBB)
             setPerspectiveBB(toIntBB);
         } catch (e) {
             console.log('Failed')
+            console.log(e)
         }
     }
     const resetPerspectiveBB = async () => {
@@ -81,14 +107,14 @@ function ImageEditScreen({route, navigation}) {
     const applyPerspectiveWarp = async () => {
         if (JSON.stringify(perspectiveBB) === JSON.stringify(originalBB)) {
             console.log("No perspective change")
-            setManipulatedImage(image)
+            setPerspectiveImage(image)
         } else {
             try {
                 console.log(perspectiveBB);
                 if (perspectiveBB.length === 8) {
                     const jpegImage = await base64ToJpeg(image)
                     const warpedImage = await services.warpImage(jpegImage.uri, perspectiveBB, account.userToken);
-                    setManipulatedImage({uri:`data:image/jpg;base64,${warpedImage.image}`})
+                    setPerspectiveImage({uri: `data:image/jpg;base64,${warpedImage.image}`})
                 }
             } catch (e) {
                 console.log('Failed')
@@ -97,16 +123,36 @@ function ImageEditScreen({route, navigation}) {
         setControlMode(null);
     }
     const base64ToJpeg = async (base64Image) => {
+        const base64Code = base64Image.uri.split("data:image/jpg;base64,")[1];
         const jpegImage = await ImageManipulator.manipulateAsync(
             base64Image.uri, [], {format: 'jpeg'},);
+        console.log(jpegImage)
         return jpegImage;
+    }
+    const base64ToJpeg2 = async (base64Image) => {
+        const base64Code = base64Image.uri.split("data:image/jpg;base64,")[1];
+        const uri = FileSystem.cacheDirectory + 'image1.jpg';
+        await FileSystem.writeAsStringAsync(uri, base64Code), {encoding: FileSystem.EncodingType.Base64};
+        // const data = await  FileSystem.readAsStringAsync(uri)
+        let result = image;
+        result.uri = uri;
+        manipulatedImage.uri = uri;
+        console.log(result);
+    }
+    const rotateImage = () => {
+        let nextState = --controlState.rotate;
+        if (nextState < 0) nextState = 3;
+        setControlState({
+            ...controlState,
+            rotate: nextState
+        })
     }
 
     useEffect(() => {
 
     }, [perspectiveMode])
     useEffect(() => {
-        console.log(manipulatedImage.uri.substring(0,100))
+        console.log(manipulatedImage.uri.substring(0, 100))
     }, [manipulatedImage])
 
 
@@ -120,7 +166,10 @@ function ImageEditScreen({route, navigation}) {
                     <TouchableOpacity style={controlStyles.controlButton} onPress={() => setControlMode('B&W')}>
                         <Text style={{fontSize: 20, fontWeight: 'bold'}}>B/W</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={controlStyles.controlButton} onPress={() => setControlMode('ROTATE')}>
+                    <TouchableOpacity style={controlStyles.controlButton} onPress={() => {
+                        setControlMode('ROTATE');
+                        rotateImage();
+                    }}>
                         <MaterialIcon name={'rotate-90-degrees-ccw'} size={35}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={controlStyles.controlButton}
@@ -142,7 +191,8 @@ function ImageEditScreen({route, navigation}) {
                         <TouchableOpacity style={controlStyles.optionButton} onPress={getPerspectiveBB}>
                             <Text>Auto</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={controlStyles.optionButton} onPress={()=>alert("Feature coming soon")}>
+                        <TouchableOpacity style={controlStyles.optionButton}
+                                          onPress={() => alert("Feature coming soon")}>
                             <Text>Manual</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={controlStyles.optionButton} onPress={resetPerspectiveBB}>
@@ -162,7 +212,7 @@ function ImageEditScreen({route, navigation}) {
             case 'ROTATE':
                 return (
                     <View style={controlStyles.controlsBottomContainer}>
-                        <Text>Rotate (Coming Soon)</Text>
+                        <Text>Rotate</Text>
                     </View>
                 );
             case 'CROP_STRAIGHTEN':
@@ -181,7 +231,7 @@ function ImageEditScreen({route, navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Edit Image'} backEnabled={true} cancelEnabled={true}/>
             {isLoading ? <Loading text={'Loading'}/> :
@@ -205,15 +255,14 @@ function ImageEditScreen({route, navigation}) {
                         <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow, {
                             marginBottom: 20,
                             backgroundColor: colors.primaryColor
-                        }]}
-                                          onPress={previewButtonAction}>
+                        }]} onPress={previewButtonAction}>
                             <Text
                                 style={commonStyle.commonTextStyleLight}>{'Proceed'}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             }
-        </View>
+        </SafeAreaView>
     );
 
 }

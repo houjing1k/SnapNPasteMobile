@@ -231,7 +231,7 @@ function HomeScreen({navigation}) {
         );
     }
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header/>
 
@@ -251,7 +251,7 @@ function HomeScreen({navigation}) {
 
             <Footer/>
 
-        </View>
+        </SafeAreaView>
     );
 }
 

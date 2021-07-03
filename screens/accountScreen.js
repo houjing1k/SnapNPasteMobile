@@ -16,15 +16,18 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {vw} from "react-native-expo-viewport-units";
 import commonStyle from "../common/commonStyles";
 import {AuthContext} from "../context/context";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {logoutDevice} from "../store/actions/chatActions";
 
 function AccountScreen({navigation}) {
 
     const {signOut} = useContext(AuthContext);
+    const dispatch = useDispatch();
     const account = useSelector(state => state.account);
 
-    const logout = () => {
+    const logout = async () => {
         signOut();
+        await logoutDevice(dispatch);
     }
     useEffect(() => {
         console.log(account);
@@ -59,7 +62,7 @@ function AccountScreen({navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'My Account'} backEnabled={true}/>
 
@@ -84,7 +87,7 @@ function AccountScreen({navigation}) {
                 </TouchableOpacity>
             </View>
 
-        </View>
+        </SafeAreaView>
     );
 }
 

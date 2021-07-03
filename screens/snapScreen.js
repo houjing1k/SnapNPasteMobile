@@ -1,5 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, Button, TouchableOpacity, Platform, Dimensions} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    TouchableOpacity,
+    Platform,
+    Dimensions,
+    SafeAreaView,
+    StatusBar
+} from 'react-native';
 import {vw, vh, vmin, vmax} from 'react-native-expo-viewport-units';
 import {Camera} from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,10 +21,14 @@ import axios from "axios";
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from "expo-constants";
 
 const imageFrameDimension = () => {
     let maxWidth = Dimensions.get('window').width;
-    let maxHeight = Dimensions.get('window').height - 70 - 120;
+    let maxHeight = Dimensions.get('window').height - (Constants.statusBarHeight+20) - 70 - 120;
+    console.log('Constants.statusBarHeight')
+    console.log(Constants.statusBarHeight)
+
     let imageRatio = 4 / 3;
     if ((maxHeight / maxWidth) < imageRatio) {
         maxWidth = maxHeight / imageRatio;
@@ -193,9 +207,9 @@ function SnapScreen({route, navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <StatusBar/>
             <Header navigation={navigation} text={'Snap ' + snapMode} backEnabled={true}/>
-
             <View style={styles.contentContainer}>
                 {
                     <Camera
@@ -226,7 +240,7 @@ function SnapScreen({route, navigation}) {
                     <MaterialIcon name={'add-photo-alternate'} size={40}/>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

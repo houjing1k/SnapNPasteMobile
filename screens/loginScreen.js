@@ -87,56 +87,54 @@ function LoginScreen({navigation}) {
     const _keyboardDidHide = () => setKeyboardStatus(false);
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
-            <StatusBar/>
-
-            <View style={styles.contentContainer}>
-                
-                {/*<SvgXml xml={logo}/>*/}
-                <Image style={styles.logoContainer} source={logo}/>
-                <View style={styles.inputContainer}>
-                    <View style={styles.inputSetContainer}>
-                        <Icon name="envelope" size={30} style={styles.inputIcon} color={colors.grey}/>
-                        <View style={styles.inputFieldContainer}>
-                            <TextInput
-                                style={[styles.input, {width: 220}]}
-                                placeholder={"Email"}
-                                onChangeText={(val) => handleEmailChange(val)}
-                            />
+        <SafeAreaView>
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
+                <StatusBar/>
+                <View style={styles.contentContainer}>
+                    <Image style={styles.logoContainer} source={logo}/>
+                    <View style={styles.inputContainer}>
+                        <View style={styles.inputSetContainer}>
+                            <Icon name="envelope" size={30} style={styles.inputIcon} color={colors.grey}/>
+                            <View style={styles.inputFieldContainer}>
+                                <TextInput
+                                    style={[styles.input, {width: 220}]}
+                                    placeholder={"Email"}
+                                    onChangeText={(val) => handleEmailChange(val)}
+                                />
+                            </View>
                         </View>
-                    </View>
-                    <View style={styles.inputSetContainer}>
-                        <MaterialIcon name="lock" size={30} style={styles.inputIcon} color={colors.grey}/>
-                        <View style={styles.inputFieldContainer}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder={"Password"}
-                                secureTextEntry={data.secureTextEntry}
-                                onChangeText={(val) => handlePasswordChange(val)}
-                            />
-                            <TouchableOpacity style={styles.visibilityIconButton} onPress={updateSecureTextEntry}>
-                                <MaterialIcon name={data.secureTextEntry ? 'visibility-off' : 'visibility'}
-                                              size={25} color={colors.iconDark}/>
-                            </TouchableOpacity>
-
+                        <View style={styles.inputSetContainer}>
+                            <MaterialIcon name="lock" size={30} style={styles.inputIcon} color={colors.grey}/>
+                            <View style={styles.inputFieldContainer}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder={"Password"}
+                                    secureTextEntry={data.secureTextEntry}
+                                    onChangeText={(val) => handlePasswordChange(val)}
+                                />
+                                <TouchableOpacity style={styles.visibilityIconButton} onPress={updateSecureTextEntry}>
+                                    <MaterialIcon name={data.secureTextEntry ? 'visibility-off' : 'visibility'}
+                                                  size={25} color={colors.iconDark}/>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                    <TouchableOpacity style={styles.forgetPassword}>
-                        <Text style={styles.forgetPasswordText}>Forget Password</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.forgetPassword}>
+                            <Text style={styles.forgetPasswordText}>Forget Password</Text>
+                        </TouchableOpacity>
 
+                    </View>
                 </View>
-            </View>
 
-            <View style={styles.bottomContainer}>
-                <TouchableOpacity style={commonStyle.buttonDual} onPress={loginAction}>
-                    <Text style={commonStyle.commonTextStyleLight}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={commonStyle.buttonDual} onPress={signupAction}>
-                    <Text style={commonStyle.commonTextStyleLight}>Signup</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
+                <View style={styles.bottomContainer}>
+                    <TouchableOpacity style={commonStyle.buttonDual} onPress={loginAction}>
+                        <Text style={commonStyle.commonTextStyleLight}>Login</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={commonStyle.buttonDual} onPress={signupAction}>
+                        <Text style={commonStyle.commonTextStyleLight}>Signup</Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 

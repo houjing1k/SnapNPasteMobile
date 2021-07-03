@@ -54,6 +54,28 @@ const services = {
         return null;
     },
     documentDetect: async (uri, userToken) => {
+        // try {
+        //     console.log("MESSAGE:")
+        //     console.log(uri)
+        //     const response = await axios.post(URL.document_detection,
+        //         {
+        //             data:uri,
+        //         },
+        //         {
+        //             headers: {
+        //                 'Authorization': `Bearer ${userToken}`,
+        //             },
+        //         })
+        //     // console.log(response);
+        //     // alert('Success');
+        //     return 'SUCCESS'
+        // } catch (e) {
+        //     console.log(e);
+        //     alert('Upload failed, sorry :(');
+        //     return 'FAILED'
+        // }
+
+
         console.log('uri: ' + uri);
         let uriParts = uri.split('.');
         let fileType = uriParts[uriParts.length - 1];
@@ -81,6 +103,7 @@ const services = {
             alert('Upload failed, sorry :(');
         }
         return null;
+
     },
     warpImage: async (uri, bb, userToken) => {
         console.log('uri: ' + uri);

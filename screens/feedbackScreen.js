@@ -90,50 +90,50 @@ function FeedbackScreen({navigation}) {
     }, [data])
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
+        <SafeAreaView>
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS==="ios"? "padding":"height"}>
+                <View style={styles.container}>
+                    <StatusBar/>
+                    <Header navigation={navigation} text={'Feedback'} backEnabled={true}/>
 
-            <View style={styles.container}>
-                <StatusBar/>
-                <Header navigation={navigation} text={'Feedback'} backEnabled={true}/>
+                    <View style={styles.contentContainer}>
+                        <View style={styles.inputSetContainer}>
+                            <View style={styles.textStyle}>
+                                <Text style={commonStyle.commonTextStyleDark}>Title: </Text>
+                            </View>
+                            <View style={styles.inputFieldContainer}>
+                                <TextInput
+                                    style={[styles.input, {width: 220}]}
+                                    placeholder={"What's the issue?"}
+                                    onChangeText={(val) => handleTitleChange(val)}
+                                />
+                            </View>
+                        </View>
 
-                <View style={styles.contentContainer}>
-                    <View style={styles.inputSetContainer}>
-                        <View style={styles.textStyle}>
-                            <Text style={commonStyle.commonTextStyleDark}>Title: </Text>
+                        <View style={[styles.inputSetContainer]}>
+                            <View style={[styles.textStyle, {marginTop: 28}]}>
+                                <Text style={commonStyle.commonTextStyleDark}>Feedback: </Text>
+                            </View>
+                            <View style={styles.inputFieldContainerBig} flexDirection='row'>
+                                <TextInput
+                                    multiline
+                                    style={[styles.input, {width: 220}]}
+                                    placeholder={"How can we improve/fix it?"}
+                                    onChangeText={(val) => handleFeedbackChange(val)}
+                                />
+                            </View>
                         </View>
-                        <View style={styles.inputFieldContainer}>
-                            <TextInput
-                                style={[styles.input, {width: 220}]}
-                                placeholder={"What's the issue?"}
-                                onChangeText={(val) => handleTitleChange(val)}
-                            />
-                        </View>
+
                     </View>
 
-                    <View style={[styles.inputSetContainer]}>
-                        <View style={[styles.textStyle, {marginTop: 28}]}>
-                            <Text style={commonStyle.commonTextStyleDark}>Feedback: </Text>
-                        </View>
-                        <View style={styles.inputFieldContainerBig} flexDirection='row'>
-                            <TextInput
-                                multiline
-                                style={[styles.input, {width: 220}]}
-                                placeholder={"How can we improve/fix it?"}
-                                onChangeText={(val) => handleFeedbackChange(val)}
-                            />
-                        </View>
+                    <View style={styles.bottomContainer}>
+                        <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]} onPress={Submit}>
+                            <Text style={commonStyle.commonTextStyleLight}>Submit Feedback</Text>
+                        </TouchableOpacity>
                     </View>
-
                 </View>
-
-                <View style={styles.bottomContainer}>
-                    <TouchableOpacity style={[commonStyle.buttonSingle, commonStyle.dropShadow]} onPress={Submit}>
-                        <Text style={commonStyle.commonTextStyleLight}>Submit Feedback</Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 

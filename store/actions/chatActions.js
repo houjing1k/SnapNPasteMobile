@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import {useSelector} from "react-redux";
-import {INITIALISE, SELECT_DEVICE, UPDATE_DEVICE_LIST} from "./types";
+import {INITIALISE, LOGOUT_DEVICE, SELECT_DEVICE, UPDATE_DEVICE_LIST} from "./types";
 import chatReducer from "../reducers/chatReducer";
 import {AsyncStorage} from "react-native";
 import uuid from 'react-native-uuid';
@@ -12,7 +12,7 @@ import ExpoRandom from "expo-random/src/ExpoRandom";
 const wsURL = BYTEUS_URL + '/ws';
 const io = require('socket.io-client')
 
-let socket;
+let socket = null;
 
 // socket.on('connect', () => {
 //     console.log(`connect ${socket.id}`);
@@ -67,6 +67,13 @@ export const selectDevice = async (dispatch, deviceName) => {
     await AsyncStorage.setItem('lastSelectedDevice', deviceName);
 }
 
+export const logoutDevice = async (dispatch) => {
+    dispatch({type: LOGOUT_DEVICE})
+    await AsyncStorage.removeItem('lastSelectedDevice')
+    if (socket != null) socket.disconnect();
+    socket = null;
+}
+
 export const sendDataToPC = async (message, chat) => {
     console.log("------SEND TEXT---------")
     if (chat.selectedDevice == null) {
@@ -74,7 +81,7 @@ export const sendDataToPC = async (message, chat) => {
     } else {
         console.log(chat);
         console.log('recipient: ' + chat.selectedDevice);
-        console.log('message: ' + message.substring(0,300));
+        console.log('message: ' + message.substring(0, 300));
         await socket.emit("transfer", chat.selectedDevice, message, "text");
     }
 };
@@ -136,5 +143,5 @@ export const getCloudHistory = async (account) => {
 }
 
 export const clearCloudHistory = async (account) => {
-    await services.deleteCloudHistory(account.email,account.userToken);
+    await services.deleteCloudHistory(account.email, account.userToken);
 }

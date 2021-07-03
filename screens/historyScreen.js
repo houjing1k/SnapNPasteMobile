@@ -152,7 +152,7 @@ function HistoryScreen({navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'History'} backEnabled={true}/>
             {
@@ -176,7 +176,7 @@ function HistoryScreen({navigation}) {
                 </TouchableOpacity>
             </View>
 
-        </View>
+        </SafeAreaView>
     );
 };
 

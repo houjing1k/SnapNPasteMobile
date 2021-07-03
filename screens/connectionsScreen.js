@@ -24,7 +24,7 @@ function ConnectionsScreen({navigation}) {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Device Selection'} backEnabled={true}/>
             <View style={styles.contentContainer}>
@@ -54,7 +54,7 @@ function ConnectionsScreen({navigation}) {
                 </ScrollView>
             </View>
 
-        </View>
+        </SafeAreaView>
     );
 }
 

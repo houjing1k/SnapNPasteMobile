@@ -97,7 +97,7 @@ function TextConfirmationScreen({route, navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar/>
             <Header navigation={navigation} text={'Preview Text'} backEnabled={true} cancelEnabled={true}/>
             <View style={styles.selectDeviceContainer}>
@@ -119,7 +119,7 @@ function TextConfirmationScreen({route, navigation}) {
                 <PasteButton/>
             </View>
 
-        </View>
+        </SafeAreaView>
     );
 }
 

@@ -169,32 +169,33 @@ function ImageConfirmationScreen({route, navigation}) {
 
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-            <StatusBar/>
-            <Header navigation={navigation} text={'Preview Image'} backEnabled={true} cancelEnabled={true}/>
-            <View style={styles.selectDeviceContainer}>
-                <TouchableOpacity style={styles.selectDeviceButton} onPress={selectDevice}>
-                    <MaterialIcon name={'computer'} size={30}/>
-                    <Text style={[commonStyle.commonTextStyleDark, {
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                        marginLeft: 15
-                    }]}>{chat.isSelectedDeviceOnline ? chat.selectedDevice : 'Device not online'}</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.contentContainer}>
-                <Image source={image} style={styles.image} resizeMethod={"auto"} resizeMode={'contain'}/>
-            </View>
-            <View style={styles.filenameInputContainer}>
-                <View style={styles.filenameInputSet}>
-                    <MaterialIcon name={'attach-file'} size={30}/>
-                    <TextInput style={styles.filenameInput} placeholder={'File Name'} value={filename}
-                               onChangeText={(text) => setFilename(text)}/>
+        <SafeAreaView>
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                <StatusBar/>
+                <Header navigation={navigation} text={'Preview Image'} backEnabled={true} cancelEnabled={true}/>
+                <View style={styles.selectDeviceContainer}>
+                    <TouchableOpacity style={styles.selectDeviceButton} onPress={selectDevice}>
+                        <MaterialIcon name={'computer'} size={30}/>
+                        <Text style={[commonStyle.commonTextStyleDark, {
+                            fontSize: 20,
+                            fontWeight: 'bold',
+                            marginLeft: 15
+                        }]}>{chat.isSelectedDeviceOnline ? chat.selectedDevice : 'Device not online'}</Text>
+                    </TouchableOpacity>
                 </View>
-            </View>
-            <PasteContainer/>
-
-        </KeyboardAvoidingView>
+                <View style={styles.contentContainer}>
+                    <Image source={image} style={styles.image} resizeMethod={"auto"} resizeMode={'contain'}/>
+                </View>
+                <View style={styles.filenameInputContainer}>
+                    <View style={styles.filenameInputSet}>
+                        <MaterialIcon name={'attach-file'} size={30}/>
+                        <TextInput style={styles.filenameInput} placeholder={'File Name'} value={filename}
+                                   onChangeText={(text) => setFilename(text)}/>
+                    </View>
+                </View>
+                <PasteContainer/>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
 
